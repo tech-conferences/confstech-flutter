@@ -47,18 +47,33 @@ class _SearchBodyState extends State<SearchBody> {
         }else if(state is EventEmpty){
           return Text('No results :(');
         }else if(state is EventLoaded){
-          return Expanded(child:
-          ListView.builder(
+          return ListView.separated(
               controller: scrollController,
+              shrinkWrap: true,
+              separatorBuilder: (context, index) {
+                return Divider();
+              },
               itemCount: state.hasMore ? state.event.length + 1 : state.event.length,
               itemBuilder: (BuildContext context, int index) {
                 if(index >= state.event.length){
-                  return BottomLoader();
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: RaisedButton(
+                          child: Text('Load More...'),
+                          onPressed: (){
+                            eventBloc.add(LoadMoreEvent());
+                          },
+                        ),
+                      ),
+                    ],
+                  );
                 } else {
                   return ConferenceItem(event: state.event[index]);
                 }
-              })
-          );
+              });
         }else{
           return Container();
         }

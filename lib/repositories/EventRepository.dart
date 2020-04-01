@@ -17,6 +17,7 @@ class EventRepository {
     AlgoliaQuery query = algolia.instance.index('prod_conferences')
         .setFilters('startDateUnix>$today')
         .setPage(page)
+        .setHitsPerPage(30)
         .search(search);
 
     AlgoliaQuerySnapshot snap = await query.getObjects();

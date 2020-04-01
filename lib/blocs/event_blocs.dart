@@ -21,7 +21,6 @@ class FetchEvent extends EventEvent {
 }
 
 class LoadMoreEvent extends EventEvent {
-
   @override
   List<Object> get props => [];
 }
@@ -65,7 +64,6 @@ class EventLoaded extends EventState {
 
   @override
   List<Object> get props => [event, hasMore, currentPage, currentQuery];
-
 }
 
 class EventError extends EventState {}
