@@ -3,6 +3,7 @@ import 'package:confs_tech/utils/utils.dart';
 import 'package:confs_tech/widgets/topics.dart';
 import 'package:confs_tech/widgets/twitter.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ConferenceItem extends StatelessWidget {
   final Event event;
@@ -17,11 +18,24 @@ class ConferenceItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(event.name,
-            style: TextStyle(
-                color: Color(0xFF0b76d8),
-                fontSize: 18
+          InkWell(
+            child: Text(event.name,
+              style: TextStyle(
+                  color: Color(0xFF0b76d8),
+                  fontSize: 18
+              ),
             ),
+            onTap: () async {
+              if (await canLaunch(event.url)) {
+                await launch(event.url);
+              } else {
+                Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Something bad happened :('),
+                    )
+                );
+              }
+            },
           ),
           SizedBox(height: 3,),
           Row(

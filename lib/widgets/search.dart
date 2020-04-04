@@ -22,7 +22,7 @@ class _SearchState extends State<Search> {
               padding: EdgeInsets.all(16),
               child: TextFormField(
                 onChanged: (text) {
-                  eventBloc.add(FetchEvent(text, 0));
+                  eventBloc.add(FetchEvent(searchQuery: text));
                 },
                 controller: controller,
                 decoration: InputDecoration(
@@ -33,7 +33,7 @@ class _SearchState extends State<Search> {
                       Icons.close
                     ),
                     onPressed: (){
-                     eventBloc.add(FetchEvent('', 0));
+                     eventBloc.add(FetchEvent());
                      controller.clear();
                     },
                   )

@@ -1,6 +1,7 @@
 import 'package:algolia/algolia.dart';
 import 'package:confs_tech/models/event_response.dart';
 import 'package:confs_tech/models/events.dart';
+import 'package:confs_tech/models/models.dart';
 
 class EventRepository {
 
@@ -9,7 +10,7 @@ class EventRepository {
     apiKey: 'f2534ea79a28d8469f4e81d546297d39',
   );
 
-  Future<EventResponse> getEvents(String search, int page) async {
+  Future<EventResponse> getEvents(String search, int page, List<Filter> selectedFilters) async {
     int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
@@ -20,14 +21,21 @@ class EventRepository {
         .setHitsPerPage(30)
         .search(search);
 
+    if (selectedFilters != null && selectedFilters.isNotEmpty)
+      query = query.setFacetFilter(transformFilters(selectedFilters));
+
     AlgoliaQuerySnapshot snap = await query.getObjects();
 
     final List<Event> items = snap.hits.map((AlgoliaObjectSnapshot item) =>
         Event.fromJson(item.data)).toList();
 
-    final hasMore = snap.page < snap.nbPages;
+    final hasMore = snap.page < snap.nbPages - 1;
 
     return EventResponse(events: items, page: snap.page, hasMore: hasMore,
-        total: snap.nbHits);
+        total: snap.nbHits, selectedFilters: selectedFilters);
+  }
+
+  static List<String> transformFilters(List<Filter> filters) {
+    return filters.map((filter) => '${filter.topic}:${filter.name}').toList();
   }
 }

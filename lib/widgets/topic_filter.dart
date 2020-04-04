@@ -39,21 +39,25 @@ class _TopicFilterState extends State<TopicFilter> {
                     ),
                   );
                 } else if (state is FilterLoaded){
-                  List<Filter> countries = state.filters[facetName];
+                  List<Filter> countries = state.filters
+                      .where((filter) => filter.topic == facetName)
+                      .toList();
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Wrap(
                           children: countries.map((filter) =>
-                              CheckboxListTile(
-                                title: Text('${filter.name} (${filter.count})'),
-                                value: filter.checked,
-                                onChanged: (bool checked){
-                                  BlocProvider.of<EventFilterBloc>(context)
-                                      .add(SetFilterCheckboxChecked(
-                                      filter.copyWith(checked: checked))
-                                  );
-                                },
+                              Card(
+                                child: CheckboxListTile(
+                                  title: Text('${filter.name} (${filter.count})'),
+                                  value: filter.checked,
+                                  onChanged: (bool checked){
+                                    BlocProvider.of<EventFilterBloc>(context)
+                                        .add(SetFilterCheckboxChecked(
+                                        filter.copyWith(checked: checked))
+                                    );
+                                  },
+                                ),
                               )
                           ).toList()
                       ),

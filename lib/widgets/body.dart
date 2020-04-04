@@ -1,5 +1,4 @@
 import 'package:confs_tech/blocs/event_blocs.dart';
-import 'package:confs_tech/widgets/bottom_loader.dart';
 import 'package:confs_tech/widgets/conference_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,9 +42,15 @@ class _SearchBodyState extends State<SearchBody> {
       bloc: BlocProvider.of(context),
       builder: (BuildContext context, EventState state){
         if(state is EventLoading){
-          return CircularProgressIndicator();
+          return Column(children: [
+            CircularProgressIndicator()
+          ]);
         }else if(state is EventEmpty){
-          return Text('No results :(');
+          return Column(
+            children: <Widget>[
+              Text('No results :('),
+            ],
+          );
         }else if(state is EventLoaded){
           return ListView.separated(
               controller: scrollController,

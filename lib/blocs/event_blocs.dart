@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/models/event_response.dart';
 import 'package:confs_tech/models/events.dart';
+import 'package:confs_tech/models/models.dart';
 import 'package:confs_tech/repositories/EventRepository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -13,11 +17,12 @@ abstract class EventEvent extends Equatable {
 class FetchEvent extends EventEvent {
   final String searchQuery;
   final int page;
+  final List<Filter> filters;
 
-  FetchEvent(this.searchQuery, this.page);
+  FetchEvent({ this.searchQuery = '', this.page = 0, this.filters = const []});
 
   @override
-  List<Object> get props => [searchQuery, page];
+  List<Object> get props => [searchQuery, page, filters];
 }
 
 class LoadMoreEvent extends EventEvent {
@@ -43,9 +48,10 @@ class EventLoaded extends EventState {
   final bool hasMore;
   final currentQuery;
   final currentPage;
+  final List<Filter> selectedFilters;
 
   const EventLoaded({@required this.event, this.hasMore, this.currentQuery,
-    this.currentPage})
+    this.currentPage, this.selectedFilters})
       : assert(event != null);
 
   EventLoaded copyWith({
@@ -53,12 +59,14 @@ class EventLoaded extends EventState {
     bool hasMore,
     String currentQuery,
     int currentPage,
+    List<Filter> selectedFilters,
   }) {
     return EventLoaded(
         event: events ?? this.event,
         hasMore: hasMore ?? this.hasMore,
         currentQuery: currentQuery ?? this.currentQuery,
-        currentPage: currentPage ?? this.currentPage
+        currentPage: currentPage ?? this.currentPage,
+        selectedFilters: selectedFilters ?? this.selectedFilters
     );
   }
 
@@ -70,8 +78,22 @@ class EventError extends EventState {}
 
 class EventBloc extends Bloc<EventEvent, EventState> {
   final EventRepository eventRepository;
+  final EventFilterBloc eventFilterBloc;
+  StreamSubscription eventFilterSubscription;
 
-  EventBloc({@required this.eventRepository}) : assert(eventRepository != null);
+  EventBloc({@required this.eventRepository, @required this.eventFilterBloc}){
+    eventFilterSubscription = eventFilterBloc.listen((state){
+      if(state is FilterApplied){
+        add(FetchEvent(filters: state.selectedFilters));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    eventFilterSubscription.cancel();
+    return super.close();
+  }
 
   @override
   Stream<EventState> transformEvents(Stream<EventEvent> events,
@@ -91,13 +113,14 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       try {
         yield EventLoading();
         EventResponse response = await this.eventRepository
-            .getEvents(event.searchQuery, event.page);
+            .getEvents(event.searchQuery, event.page, event.filters);
 
         if (response.events.length == 0) {
           yield EventEmpty();
         } else {
           yield EventLoaded(event: response.events, hasMore: response.hasMore,
-              currentQuery: event.searchQuery, currentPage: response.page);
+              currentQuery: event.searchQuery, currentPage: response.page,
+              selectedFilters: response.selectedFilters);
         }
       } catch (e) {
         print(e);
@@ -107,7 +130,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       try {
         if(currentState is EventLoaded) {
           EventResponse response = await this.eventRepository
-              .getEvents(currentState.currentQuery, currentState.currentPage + 1);
+              .getEvents(currentState.currentQuery, currentState.currentPage + 1,
+              currentState.selectedFilters);
 
           if (response.events.length == 0) {
             yield currentState.copyWith(hasMore: false);
@@ -115,7 +139,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             yield currentState.copyWith(
               events: currentState.event + response.events,
               hasMore: response.hasMore,
-              currentPage: currentState.currentPage + 1
+              currentPage: currentState.currentPage + 1,
+              selectedFilters: currentState.selectedFilters,
             );
           }
         }

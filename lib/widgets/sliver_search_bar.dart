@@ -67,9 +67,9 @@ class _SliverSearchBar extends State<SliverSearchBar> {
       } else {
         isInSearchMode = false;
         this._appBarTitle = new Text('Confs.tech');
-        _filter.clear();
-        if(onSearchTextChanged != null)
+        if(onSearchTextChanged != null && _filter.text != '')
           onSearchTextChanged('');
+        _filter.clear();
       }
     });
   }

@@ -10,7 +10,7 @@ class FilterRepository {
     apiKey: 'f2534ea79a28d8469f4e81d546297d39',
   );
 
-  Future<Map<String, List<Filter>>> fetchAllFilters() async {
+  Future<List<Filter>> fetchAllFilters() async {
     final int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
@@ -21,14 +21,12 @@ class FilterRepository {
 
     AlgoliaQuerySnapshot snap = await query.getObjects();
 
-    Map<String, List<Filter>> output = HashMap();
+    List<Filter> output = [];
 
     snap.facets.entries.forEach((facet) {
-      List<Filter> out = [];
       (facet.value as Map<String, dynamic>).forEach((name, count) {
-        out.add(Filter(name: name, count: count, checked: false, topic: facet.key));
+        output.add(Filter(name: name, count: count, checked: false, topic: facet.key));
       });
-      output.putIfAbsent(facet.key, () => out);
     });
 
     return output;
