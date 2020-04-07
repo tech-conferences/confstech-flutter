@@ -41,7 +41,7 @@ class ConferenceItem extends StatelessWidget {
           Row(
             children: <Widget>[
               Text('${event.city}, ${event.country}',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16,),
               ),
               Text('・', style: TextStyle(fontWeight: FontWeight.w500)),
               Text(Utils.formatDate(event.startDate, event.endDate),

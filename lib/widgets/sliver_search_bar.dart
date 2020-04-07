@@ -29,22 +29,58 @@ class _SliverSearchBar extends State<SliverSearchBar> {
   }
 
   Widget _buildBar(BuildContext context) {
-    return new SliverAppBar(
-        floating: true,
-        title: _appBarTitle,
-        leading: isInSearchMode ? IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: _searchPressed,
-        ) : null,
-        actions: List.unmodifiable(() sync* {
-          if (!isInSearchMode) yield IconButton(
-            icon: Icon(Icons.search),
+    return WillPopScope(
+      onWillPop: () async {
+        if (isInSearchMode){
+          _searchPressed();
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: new SliverAppBar(
+          floating: true,
+          title: _appBarTitle,
+          leading: isInSearchMode ? IconButton(
+            icon: Icon(Icons.arrow_back),
             onPressed: _searchPressed,
-          );
-          if (!isInSearchMode && this.actions != null) {
-            yield* this.actions;
-          }
-        }())
+          ) : null,
+          actions: List.unmodifiable(() sync* {
+            if (!isInSearchMode) yield IconButton(
+              icon: Icon(Icons.search),
+              onPressed: _searchPressed,
+            );
+            if (!isInSearchMode && this.actions != null) {
+              yield* this.actions;
+            }
+          }()),
+//        expandedHeight: kToolbarHeight * 2,
+//        flexibleSpace: Padding(
+//          padding: EdgeInsets.only(top: kToolbarHeight),
+//          child: Row(
+//            children: <Widget>[
+//              Padding(
+//                padding: const EdgeInsets.only(left: 16.0),
+//                child: OutlineButton(
+//                  onPressed: (){},
+//                  borderSide: BorderSide(width: .8),
+//                  child: Text('Topic'),
+//                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+//                ),
+//              ),
+//              Padding(
+//                padding: const EdgeInsets.only(left: 16.0),
+//                child: OutlineButton(
+//                  onPressed: (){},
+//                  borderSide: BorderSide(width: .8),
+//                  child: Text('Country'),
+//                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+//                ),
+//              )
+//            ],
+//          ),
+//        ),
+      ),
     );
   }
 

@@ -2,12 +2,12 @@ import 'package:confs_tech/blocs/SimpleBlocDelegate.dart';
 import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/blocs/event_blocs.dart';
 import 'package:confs_tech/blocs/filter_stats/bloc.dart';
-import 'package:confs_tech/repositories/EventRepository.dart';
+import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:confs_tech/repositories/filter_repository.dart';
-import 'package:confs_tech/widgets/filter_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/filter_page.dart';
 import 'bloc/home_page.dart';
 
 void main() {
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
                     )..add(FetchEvent()),
                     child: HomePage(),
                   ),
-              '/filter': (context) => MyTabbedPage(),
+              '/filter': (context) => FilterPage(),
             }
         )
     );

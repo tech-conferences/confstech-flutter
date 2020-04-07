@@ -1,7 +1,11 @@
 import 'package:confs_tech/blocs/event_blocs.dart';
+import 'package:confs_tech/libs/grouped_list.dart';
+import 'package:confs_tech/models/models.dart';
 import 'package:confs_tech/widgets/conference_item.dart';
+import 'package:confs_tech/widgets/country_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class SearchBody extends StatefulWidget {
 
@@ -42,9 +46,12 @@ class _SearchBodyState extends State<SearchBody> {
       bloc: BlocProvider.of(context),
       builder: (BuildContext context, EventState state){
         if(state is EventLoading){
-          return Column(children: [
-            CircularProgressIndicator()
-          ]);
+          return Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Align(
+                child: CircularProgressIndicator()
+            ),
+          );
         }else if(state is EventEmpty){
           return Column(
             children: <Widget>[
@@ -52,34 +59,61 @@ class _SearchBodyState extends State<SearchBody> {
             ],
           );
         }else if(state is EventLoaded){
-          return ListView.separated(
-              controller: scrollController,
+          return GroupedListView<Event, String>(
+              separator: Divider(),
               shrinkWrap: true,
-              separatorBuilder: (context, index) {
-                return Divider();
+              sort: false,
+              elements: state.event,
+              hasFooter: state.hasMore,
+              renderFooter: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: RaisedButton(
+                      child: Text('Load More...'),
+                      onPressed: (){
+                        eventBloc.add(LoadMoreEvent());
+                      },
+                    ),
+                  ),
+                ],
+              ),
+//              itemCount: state.hasMore ? state.event.length + 1 : state.event.length,
+              indexedItemBuilder: (BuildContext context, Event event, int index) {
+                return ConferenceItem(event: event);
               },
-              itemCount: state.hasMore ? state.event.length + 1 : state.event.length,
-              itemBuilder: (BuildContext context, int index) {
-                if(index >= state.event.length){
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(bottom: 12),
-                        child: RaisedButton(
-                          child: Text('Load More...'),
-                          onPressed: (){
-                            eventBloc.add(LoadMoreEvent());
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return ConferenceItem(event: state.event[index]);
-                }
+              groupSeparatorBuilder: (value) {
+                return CountryHeader(value);
+              },
+              groupBy: (Event element) {
+                return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
               });
-        }else{
+        }else if (state is EventError){
+          return Container(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'An error has ocurred :(',
+                        style: TextStyle(fontSize: 26),
+                      ),
+                      RaisedButton(
+                        onPressed: (){
+                          eventBloc.add(FetchEvent());
+                        },
+                        child: Text('Try again'),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
           return Container();
         }
       },

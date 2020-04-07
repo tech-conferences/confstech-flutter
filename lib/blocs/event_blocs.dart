@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/models/event_response.dart';
-import 'package:confs_tech/models/events.dart';
 import 'package:confs_tech/models/models.dart';
-import 'package:confs_tech/repositories/EventRepository.dart';
+import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,7 +143,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             );
           }
         }
-      }catch(e) {
+      } catch(e) {
         print(e);
         yield EventError();
       }

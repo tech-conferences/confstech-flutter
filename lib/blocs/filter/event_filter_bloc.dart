@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:confs_tech/models/models.dart';
@@ -24,7 +23,7 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
     if (event is FetchFilters) {
       try {
         yield FilterLoading();
-        List<Filter> filters = await this.filterRepository.fetchAllFilters();
+        List<Filter> filters = await this.filterRepository.fetchFilters();
 
         if(currentState.selectedFilters.isNotEmpty){
           filters = filters.map((filter) =>
@@ -39,15 +38,18 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
       }
     } else if (event is SetFilterCheckboxChecked) {
       if(currentState is FilterLoaded) {
-        final output = currentState.filters.map((filter) =>
-        filter.name == event.filter.name ? event.filter : filter).toList();
+        yield FilterLoading();
 
         final selected = event.filter.checked ?
         (currentState.selectedFilters + [event.filter]) :
         (List<Filter>.from(currentState.selectedFilters)..removeWhere((
             filter) => event.filter.name == filter.name));
 
-        yield FilterLoaded(filters: output, selectedFilters: selected);
+        List<Filter> filters = await this.filterRepository
+            .fetchFiltersWithSelected(selected)..removeWhere((filter) =>
+            selected.any((selectedFilter) => filter.name == selectedFilter.name));
+
+        yield FilterLoaded(filters: filters, selectedFilters: selected);
       }
     } else if (event is ClearFiltersEvent) {
       if(currentState is FilterLoaded) {
