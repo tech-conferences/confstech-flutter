@@ -38,22 +38,24 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
       }
     } else if (event is SetFilterCheckboxChecked) {
       if(currentState is FilterLoaded) {
-        yield FilterLoading();
-
         final selected = event.filter.checked ?
         (currentState.selectedFilters + [event.filter]) :
         (List<Filter>.from(currentState.selectedFilters)..removeWhere((
-            filter) => event.filter.name == filter.name));
+            filter) => event.filter.name == filter.name)).toList();
 
-        List<Filter> filters = await this.filterRepository
-            .fetchFiltersWithSelected(selected)..removeWhere((filter) =>
-            selected.any((selectedFilter) => filter.name == selectedFilter.name));
+        final filters = currentState.filters
+            .map((filter) => filter.name == event.filter.name ?
+        filter.copyWith(checked: event.filter.checked) : filter).toList();
 
         yield FilterLoaded(filters: filters, selectedFilters: selected);
       }
     } else if (event is ClearFiltersEvent) {
       if(currentState is FilterLoaded) {
-        yield FilterApplied(selectedFilters: const <Filter>[]);
+        final filters = currentState.filters
+            .map((filter) => filter.copyWith(checked: false))
+            .toList();
+
+        yield FilterLoaded(filters: filters, selectedFilters: const <Filter>[]);
       }
     }else if(event is ApplyFiltersEvent) {
       if(currentState is FilterLoaded) {

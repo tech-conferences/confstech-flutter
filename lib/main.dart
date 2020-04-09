@@ -36,6 +36,8 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.orange,
+              primaryColor: Colors.orange,
+              accentColor: Colors.lightBlue[400]
             ),
             initialRoute: '/',
             routes: {

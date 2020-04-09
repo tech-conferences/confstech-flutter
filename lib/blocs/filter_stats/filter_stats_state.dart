@@ -11,9 +11,15 @@ class FilterStatsLoading extends FilterStatsState {
 
 class FilterStatsLoaded extends FilterStatsState {
   final int selectedFilters;
+  final int topicFilters;
+  final int countryFilters;
 
-  FilterStatsLoaded(this.selectedFilters);
+  FilterStatsLoaded({
+    this.selectedFilters = 0,
+    this.topicFilters = 0,
+    this.countryFilters = 0
+  });
 
   @override
-  List<Object> get props => [selectedFilters];
+  List<Object> get props => [selectedFilters, topicFilters, countryFilters];
 }

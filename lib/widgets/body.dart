@@ -79,7 +79,6 @@ class _SearchBodyState extends State<SearchBody> {
                   ),
                 ],
               ),
-//              itemCount: state.hasMore ? state.event.length + 1 : state.event.length,
               indexedItemBuilder: (BuildContext context, Event event, int index) {
                 return ConferenceItem(event: event);
               },

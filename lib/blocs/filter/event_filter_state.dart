@@ -24,7 +24,7 @@ class FilterLoaded extends EventFilterState {
   final List<Filter> filters;
 
   FilterLoaded({ this.filters, this.topic, selectedFilters }) :
-        super(selectedFilters: selectedFilters);
+        super(selectedFilters:  selectedFilters);
 
   @override
   List<Object> get props => [filters, topic];
