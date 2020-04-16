@@ -1,4 +1,5 @@
-import 'package:confs_tech/blocs/event_blocs.dart';
+import 'package:confs_tech/blocs/event/event_bloc.dart';
+import 'package:confs_tech/blocs/event/event_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -8,11 +8,11 @@ class FilterRepository {
     apiKey: 'f2534ea79a28d8469f4e81d546297d39',
   );
 
-  Future<List<Filter>> fetchFilters() async {
-    return this.fetchFiltersWithSelected(null);
+  Future<List<Filter>> fetchFilters(String facetName) async {
+    return this.fetchFiltersWithSelected(null, facetName);
   }
 
-  Future<List<Filter>> fetchFiltersWithSelected(List<Filter> selectedFilters) async {
+  Future<List<Filter>> fetchFiltersWithSelected(List<Filter> selectedFilters, String facetName) async {
     final int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
@@ -20,7 +20,7 @@ class FilterRepository {
     AlgoliaQuery query = algolia.instance.index('prod_conferences')
         .setFilters('startDateUnix>$today')
         .setMaxValuesPerFacet(100)
-        .setFacets(["topics", "country"]);
+        .setFacets([facetName]);
 
     if(selectedFilters != null && selectedFilters.isNotEmpty) {
       query = query.setFacetFilter([transformFilters(selectedFilters)]);

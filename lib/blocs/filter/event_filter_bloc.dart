@@ -23,31 +23,19 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
     if (event is FetchFilters) {
       try {
         yield FilterLoading();
-        List<Filter> filters = await this.filterRepository.fetchFilters();
+        List<Filter> filters = await this.filterRepository.fetchFilters(event.topic);
 
-        if(currentState.selectedFilters.isNotEmpty){
-          filters = filters.map((filter) =>
-          currentState.selectedFilters.any((selectedFilter) =>
-          selectedFilter.name == filter.name) ? filter.copyWith(checked: true) :
-          filter).toList();
-        }
-
-        yield FilterLoaded(filters: filters, selectedFilters: currentState.selectedFilters);
+        yield FilterLoaded(filters: filters);
       }catch(_) {
         yield FilterError();
       }
     } else if (event is SetFilterCheckboxChecked) {
       if(currentState is FilterLoaded) {
-        final selected = event.filter.checked ?
-        (currentState.selectedFilters + [event.filter]) :
-        (List<Filter>.from(currentState.selectedFilters)..removeWhere((
-            filter) => event.filter.name == filter.name)).toList();
-
         final filters = currentState.filters
             .map((filter) => filter.name == event.filter.name ?
-        filter.copyWith(checked: event.filter.checked) : filter).toList();
+        event.filter.copyWith(checked: event.checked) : filter).toList();
 
-        yield FilterLoaded(filters: filters, selectedFilters: selected);
+        yield FilterLoaded(filters: filters);
       }
     } else if (event is ClearFiltersEvent) {
       if(currentState is FilterLoaded) {
@@ -55,11 +43,7 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
             .map((filter) => filter.copyWith(checked: false))
             .toList();
 
-        yield FilterLoaded(filters: filters, selectedFilters: const <Filter>[]);
-      }
-    }else if(event is ApplyFiltersEvent) {
-      if(currentState is FilterLoaded) {
-        yield FilterApplied(selectedFilters: currentState.selectedFilters);
+        yield FilterLoaded(filters: filters);
       }
     }
   }
