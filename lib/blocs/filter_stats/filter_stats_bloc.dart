@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import './bloc.dart';
 
 class FilterStatsBloc extends Bloc<FilterStatsEvent, FilterStatsState> {
-  final EventFilterBloc eventFilterBloc;
+  final FilteredEventsBloc filteredEventsBloc;
   StreamSubscription eventSubscription;
 
-  FilterStatsBloc({ @required this.eventFilterBloc }){
-    eventSubscription = eventFilterBloc.listen((state){
-      if (state is FilterApplied){
-        add(UpdateStats([]));
+  FilterStatsBloc({ @required this.filteredEventsBloc }){
+    eventSubscription = filteredEventsBloc.listen((state){
+      if (state is FilteredEventsLoaded){
+        add(UpdateStats(state.selectedFilters));
       }
     });
   }

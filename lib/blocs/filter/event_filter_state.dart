@@ -7,11 +7,6 @@ abstract class EventFilterState extends Equatable {
   EventFilterState();
 }
 
-class InitialEventFilterState extends EventFilterState {
-  @override
-  List<Object> get props => [];
-}
-
 class FilterLoading extends EventFilterState {
   @override
   List<Object> get props => [];
@@ -29,11 +24,4 @@ class FilterLoaded extends EventFilterState {
 class FilterError extends EventFilterState {
   @override
   List<Object> get props => null;
-}
-
-class FilterApplied extends EventFilterState {
-  FilterApplied();
-
-  @override
-  List<Object> get props => [];
 }

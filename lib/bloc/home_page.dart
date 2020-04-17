@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/blocs/event/event_bloc.dart';
 import 'package:confs_tech/blocs/event/event_event.dart';
+import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:confs_tech/widgets/body.dart';
 import 'package:confs_tech/widgets/filter_header.dart';
 import 'package:confs_tech/widgets/sliver_search_bar.dart';
@@ -15,39 +16,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  EventBloc _eventBloc;
 
   @override
   void initState() {
-    BlocProvider.of<EventBloc>(context).add(FetchEvent());
+    _eventBloc = EventBloc(
+        filteredEventsBloc: BlocProvider.of(context),
+        eventRepository: EventRepository()
+    )..add(FetchEvent());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverSearchBar(
-              onSearchTextChanged: (text) {
-                BlocProvider.of<EventBloc>(context).add(
-                    FetchEvent(searchQuery: text)
-                );
-              },
+        child:  MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (BuildContext ctx) => _eventBloc
             ),
-            SliverPersistentHeader(
-              delegate: new _SliverAppBarDelegate(
-                minHeight: kToolbarHeight,
-                maxHeight: kToolbarHeight + 48,
-                child: FilterHeader()
+            BlocProvider(
+              create: (BuildContext ctx) =>
+                  FilterStatsBloc(
+                      filteredEventsBloc: BlocProvider.of<FilteredEventsBloc>(context)
+                  ),
+            ),],
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverSearchBar(
+                onSearchTextChanged: (text) {
+                  BlocProvider.of<EventBloc>(context).add(
+                      FetchEvent(searchQuery: text)
+                  );
+                },
               ),
-            ),
-            SliverList(
-                delegate: SliverChildListDelegate([
-                  SearchBody(),
-                ])
-            )
-          ],
+              SliverPersistentHeader(
+                delegate: new _SliverAppBarDelegate(
+                    minHeight: kToolbarHeight,
+                    maxHeight: kToolbarHeight + 48,
+                    child: FilterHeader()
+                ),
+              ),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                    SearchBody(),
+                  ])
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -33,12 +33,3 @@ class LoadMoreEvent extends EventEvent {
   @override
   List<Object> get props => [];
 }
-
-class ApplyFiltersEvent extends EventEvent {
-  final List<Filter> filters;
-
-  ApplyFiltersEvent(this.filters);
-
-  @override
-  List<Object> get props => [filters];
-}

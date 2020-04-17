@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/models/event_response.dart';
 import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +12,22 @@ import 'event_state.dart';
 
 class EventBloc extends Bloc<EventEvent, EventState> {
   final EventRepository eventRepository;
+  final FilteredEventsBloc filteredEventsBloc;
+  StreamSubscription filteredEventsSubscription;
 
-  EventBloc({@required this.eventRepository});
+  EventBloc({ @required this.eventRepository, @required this.filteredEventsBloc}){
+    filteredEventsSubscription = filteredEventsBloc.listen((state){
+      if(state is FilteredEventsLoaded) {
+        add(FetchEvent(filters: state.selectedFilters));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    filteredEventsSubscription.cancel();
+    return super.close();
+  }
 
   @override
   Stream<EventState> transformEvents(Stream<EventEvent> events,
@@ -43,11 +60,12 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         print(e);
         yield EventError();
       }
-    } else if (event is LoadMoreEvent && hasMore(currentState)) {
+    } else if (event is LoadMoreEvent && _hasMore(currentState)) {
       try {
-        if(currentState is EventLoaded) {
+        if (currentState is EventLoaded) {
           EventResponse response = await this.eventRepository
-              .getEvents(currentState.currentQuery, currentState.currentPage + 1,
+              .getEvents(
+              currentState.currentQuery, currentState.currentPage + 1,
               currentState.selectedFilters);
 
           if (response.events.length == 0) {
@@ -61,33 +79,13 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             );
           }
         }
-      } catch(e) {
-        yield EventError();
-      }
-    } else if (event is ApplyFiltersEvent) {
-      try {
-        if(currentState is EventLoaded) {
-          EventResponse response = await this.eventRepository
-              .getEvents(currentState.currentQuery, 0, event.filters);
-
-          if (response.events.isEmpty) {
-            yield currentState.copyWith(hasMore: false);
-          } else {
-            yield currentState.copyWith(
-              events: response.events,
-              hasMore: response.hasMore,
-              currentPage: 0,
-              selectedFilters: event.filters,
-            );
-          }
-        }
-      } catch(e) {
+      } catch (e) {
         yield EventError();
       }
     }
   }
 
-  bool hasMore(EventState state) {
+  bool _hasMore(EventState state) {
     return state is EventLoaded && state.hasMore;
   }
 }

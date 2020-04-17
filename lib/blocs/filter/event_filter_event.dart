@@ -30,3 +30,8 @@ class ClearFiltersEvent extends EventFilterEvent{
   @override
   List<Object> get props => [];
 }
+
+class ApplyFilters extends EventFilterEvent {
+  @override
+  List<Object> get props => [];
+}
