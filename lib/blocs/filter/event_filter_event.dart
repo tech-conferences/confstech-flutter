@@ -32,6 +32,10 @@ class ClearFiltersEvent extends EventFilterEvent{
 }
 
 class ApplyFilters extends EventFilterEvent {
+  final String facetName;
+
+  ApplyFilters(this.facetName);
+
   @override
   List<Object> get props => [];
 }

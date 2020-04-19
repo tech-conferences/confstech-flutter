@@ -47,21 +47,47 @@ class _FilterDialogState extends State<FilterDialog> {
           ],
         ),
         content: TopicFilter(this.facetName),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Cancel'),
-            textColor: Theme.of(context).accentColor,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text('Filter'),
-            textColor: Theme.of(context).accentColor,
-            onPressed: () {
-              _eventFilterBloc.add(ApplyFilters());
-              Navigator.of(context).pop();
-            },
+        actions: [
+          SizedBox(
+            width: double.maxFinite,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: FlatButton(
+                        child: Text('Clear All'),
+                        textColor: Theme.of(context).accentColor,
+                        onPressed: () {
+                          _eventFilterBloc.add(ClearFiltersEvent());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text('Cancel'),
+                      textColor: Theme.of(context).accentColor,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Filter'),
+                      textColor: Theme.of(context).accentColor,
+                      onPressed: () {
+                        _eventFilterBloc.add(ApplyFilters(this.facetName));
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

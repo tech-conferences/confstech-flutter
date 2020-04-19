@@ -9,18 +9,10 @@ abstract class FilteredBlocsEvent extends Equatable {
 
 class FilterUpdated extends FilteredBlocsEvent {
   final List<Filter> selectedFilter;
+  final String facetName;
 
-  FilterUpdated(this.selectedFilter);
+  FilterUpdated(this.selectedFilter, this.facetName);
 
   @override
   List<Object> get props => [selectedFilter];
-}
-
-class EventUpdated extends FilteredBlocsEvent {
-  final List<Event> events;
-
-  EventUpdated(this.events);
-
-  @override
-  List<Object> get props => [events];
 }

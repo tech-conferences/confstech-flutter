@@ -61,7 +61,7 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
       if(currentState is FilterLoaded) {
         final selectedFilters = List<Filter>.from(currentState.filters)
             .where((event) => event.checked == true).toList();
-        this.filteredEventsBloc.add(FilterUpdated(selectedFilters));
+        this.filteredEventsBloc.add(FilterUpdated(selectedFilters, event.facetName));
       }
     }
   }

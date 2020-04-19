@@ -4,8 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:confs_tech/blocs/bloc.dart';
 import 'package:flutter/material.dart';
 
-import './bloc.dart';
-
 class FilterStatsBloc extends Bloc<FilterStatsEvent, FilterStatsState> {
   final FilteredEventsBloc filteredEventsBloc;
   StreamSubscription eventSubscription;

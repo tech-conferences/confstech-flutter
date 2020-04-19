@@ -1,4 +1,4 @@
-import 'package:confs_tech/blocs/filter_stats/bloc.dart';
+import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/dialog/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
