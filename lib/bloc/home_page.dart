@@ -28,11 +28,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -51,9 +46,8 @@ class _HomePageState extends State<HomePage> {
             slivers: <Widget>[
               SliverSearchBar(
                 onSearchTextChanged: (text) {
-                  BlocProvider.of<EventBloc>(context).add(
-                      FetchEvent(searchQuery: text)
-                  );
+                  BlocProvider.of<FilteredEventsBloc>(context)
+                      .add(SearchChanged(searchQuery: text));
                 },
               ),
               SliverPersistentHeader(

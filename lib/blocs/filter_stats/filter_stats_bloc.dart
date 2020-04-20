@@ -24,11 +24,11 @@ class FilterStatsBloc extends Bloc<FilterStatsEvent, FilterStatsState> {
       FilterStatsEvent event,
       ) async* {
     if (event is UpdateStats) {
-      int topicFilter = event.filters.where((event) =>
-        event.checked && event.topic == 'topics').toList().length;
+      int topicFilter = event.filters?.where((event) =>
+        event.checked && event.topic == 'topics')?.toList()?.length;
 
-      int countryFilter = event.filters.where((event) =>
-        event.checked && event.topic == 'country').toList().length;
+      int countryFilter = event.filters?.where((event) =>
+        event.checked && event.topic == 'country')?.toList()?.length;
 
       yield FilterStatsLoaded(selectedFilters: topicFilter + countryFilter,
           topicFilters: topicFilter, countryFilters: countryFilter);

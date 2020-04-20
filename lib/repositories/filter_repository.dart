@@ -23,7 +23,7 @@ class FilterRepository {
         .setFacets([facetName]);
 
     if(selectedFilters != null && selectedFilters.isNotEmpty) {
-      query = query.setFacetFilter([transformFilters(selectedFilters)]);
+      query = query.setFacetFilter(transformFilters(selectedFilters));
     }
 
     AlgoliaQuerySnapshot snap = await query.getObjects();
@@ -39,9 +39,9 @@ class FilterRepository {
     return output;
   }
 
-  static String transformFilters(List<Filter> filters) {
+  static List<String> transformFilters(List<Filter> filters) {
     return filters.map((filter) =>
-        '${filter.topic}:${filter.name}').join(',');
+        '${filter.topic}:${filter.name}').toList();
   }
 
 }

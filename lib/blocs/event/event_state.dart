@@ -12,8 +12,6 @@ abstract class EventState extends Equatable {
 
 class EventEmpty extends EventState {}
 
-class EventUninitialized extends EventState {}
-
 class EventLoading extends EventState {}
 
 class EventLoaded extends EventState {

@@ -11,8 +11,17 @@ class FilterUpdated extends FilteredBlocsEvent {
   final List<Filter> selectedFilter;
   final String facetName;
 
-  FilterUpdated(this.selectedFilter, this.facetName);
+  FilterUpdated({ this.selectedFilter = const [], this.facetName = ''});
 
   @override
   List<Object> get props => [selectedFilter];
+}
+
+class SearchChanged extends FilteredBlocsEvent {
+  final String searchQuery;
+
+  SearchChanged({ this.searchQuery = '' });
+
+  @override
+  List<Object> get props => [searchQuery];
 }

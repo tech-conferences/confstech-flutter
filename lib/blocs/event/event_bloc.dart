@@ -5,7 +5,6 @@ import 'package:confs_tech/models/event_response.dart';
 import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'event_event.dart';
 import 'event_state.dart';
@@ -18,7 +17,10 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   EventBloc({ @required this.eventRepository, @required this.filteredEventsBloc}){
     filteredEventsSubscription = filteredEventsBloc.listen((state){
       if(state is FilteredEventsLoaded) {
-        add(FetchEvent(filters: state.selectedFilters));
+        add(FetchEvent(
+            filters: state.selectedFilters,
+            searchQuery: state.searchQuery
+        ));
       }
     });
   }
@@ -29,15 +31,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     return super.close();
   }
 
-  @override
-  Stream<EventState> transformEvents(Stream<EventEvent> events,
-      Stream<EventState> Function(EventEvent) next) {
-    return events
-        .debounceTime(Duration(milliseconds: 300))
-        .switchMap(next);
-  }
-
-  EventState get initialState => EventUninitialized();
+  EventState get initialState => EventLoading();
 
   @override
   Stream<EventState> mapEventToState(EventEvent event) async* {

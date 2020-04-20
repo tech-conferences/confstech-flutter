@@ -32,10 +32,10 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
             .fetchFilters(event.topic);
 
         final finalFilters = filters.map((fetchedEvent){
-            return selectedFilters.any((selectedFilter) =>
-            fetchedEvent.name == selectedFilter.name) ?
-            fetchedEvent.copyWith(checked: true) : fetchedEvent;
-          }).toList();
+          return selectedFilters.any((selectedFilter) =>
+          fetchedEvent.name == selectedFilter.name) ?
+          fetchedEvent.copyWith(checked: true) : fetchedEvent;
+        }).toList();
 
         yield FilterLoaded(filters: finalFilters);
       }catch(_) {
@@ -61,7 +61,10 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
       if(currentState is FilterLoaded) {
         final selectedFilters = List<Filter>.from(currentState.filters)
             .where((event) => event.checked == true).toList();
-        this.filteredEventsBloc.add(FilterUpdated(selectedFilters, event.facetName));
+        this.filteredEventsBloc.add(FilterUpdated(
+          selectedFilter: selectedFilters,
+          facetName: event.facetName,
+        ));
       }
     }
   }
