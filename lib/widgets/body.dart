@@ -1,4 +1,6 @@
-import 'package:confs_tech/blocs/event_blocs.dart';
+import 'package:confs_tech/blocs/event/event_bloc.dart';
+import 'package:confs_tech/blocs/event/event_event.dart';
+import 'package:confs_tech/blocs/event/event_state.dart';
 import 'package:confs_tech/libs/grouped_list.dart';
 import 'package:confs_tech/models/models.dart';
 import 'package:confs_tech/widgets/conference_item.dart';
@@ -62,7 +64,6 @@ class _SearchBodyState extends State<SearchBody> {
           return GroupedListView<Event, String>(
               separator: Divider(),
               shrinkWrap: true,
-              sort: false,
               elements: state.event,
               hasFooter: state.hasMore,
               renderFooter: Column(
@@ -79,7 +80,6 @@ class _SearchBodyState extends State<SearchBody> {
                   ),
                 ],
               ),
-//              itemCount: state.hasMore ? state.event.length + 1 : state.event.length,
               indexedItemBuilder: (BuildContext context, Event event, int index) {
                 return ConferenceItem(event: event);
               },

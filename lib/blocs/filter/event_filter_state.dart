@@ -4,14 +4,7 @@ import 'package:flutter/material.dart';
 
 @immutable
 abstract class EventFilterState extends Equatable {
-  final List<Filter> selectedFilters;
-
-  EventFilterState({ this.selectedFilters = const []});
-}
-
-class InitialEventFilterState extends EventFilterState {
-  @override
-  List<Object> get props => [];
+  EventFilterState();
 }
 
 class FilterLoading extends EventFilterState {
@@ -20,42 +13,15 @@ class FilterLoading extends EventFilterState {
 }
 
 class FilterLoaded extends EventFilterState {
-  final String topic;
   final List<Filter> filters;
 
-  FilterLoaded({ this.filters, this.topic, selectedFilters }) :
-        super(selectedFilters: selectedFilters);
+  FilterLoaded({ this.filters });
 
   @override
-  List<Object> get props => [filters, topic];
+  List<Object> get props => [filters];
 }
 
 class FilterError extends EventFilterState {
   @override
   List<Object> get props => null;
-}
-
-class FiltersAdded extends EventFilterState {
-  final List<String> checkedFilters;
-
-  FiltersAdded(this.checkedFilters);
-
-  @override
-  List<Object> get props => [checkedFilters];
-}
-
-class FilterCheckboxChecked extends EventFilterState {
-  final Filter filter;
-
-  FilterCheckboxChecked(this.filter);
-
-  @override
-  List<Object> get props => [filter];
-}
-
-class FilterApplied extends EventFilterState {
-  FilterApplied({ selectedFilters }) : super(selectedFilters: selectedFilters);
-
-  @override
-  List<Object> get props => [selectedFilters];
 }

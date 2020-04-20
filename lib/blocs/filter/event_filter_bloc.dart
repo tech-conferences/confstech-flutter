@@ -3,16 +3,19 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:confs_tech/models/models.dart';
 import 'package:confs_tech/repositories/filter_repository.dart';
+import 'package:flutter/widgets.dart';
 
 import '../bloc.dart';
 
 class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
   final FilterRepository filterRepository;
+  final FilteredEventsBloc filteredEventsBloc;
 
-  EventFilterBloc({ this.filterRepository });
+  EventFilterBloc({ @required this.filterRepository,
+    @required this.filteredEventsBloc });
 
   @override
-  EventFilterState get initialState => InitialEventFilterState();
+  EventFilterState get initialState => FilterLoading();
 
   @override
   Stream<EventFilterState> mapEventToState(
@@ -23,41 +26,45 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
     if (event is FetchFilters) {
       try {
         yield FilterLoading();
-        List<Filter> filters = await this.filterRepository.fetchFilters();
+        final selectedFilters = filteredEventsBloc.state.selectedFilters;
 
-        if(currentState.selectedFilters.isNotEmpty){
-          filters = filters.map((filter) =>
-          currentState.selectedFilters.any((selectedFilter) =>
-          selectedFilter.name == filter.name) ? filter.copyWith(checked: true) :
-          filter).toList();
-        }
+        List<Filter> filters = await this.filterRepository
+            .fetchFilters(event.topic);
 
-        yield FilterLoaded(filters: filters, selectedFilters: currentState.selectedFilters);
+        final finalFilters = filters.map((fetchedEvent){
+          return selectedFilters.any((selectedFilter) =>
+          fetchedEvent.name == selectedFilter.name) ?
+          fetchedEvent.copyWith(checked: true) : fetchedEvent;
+        }).toList();
+
+        yield FilterLoaded(filters: finalFilters);
       }catch(_) {
         yield FilterError();
       }
     } else if (event is SetFilterCheckboxChecked) {
       if(currentState is FilterLoaded) {
-        yield FilterLoading();
+        final filters = currentState.filters
+            .map((filter) => filter.name == event.filter.name ?
+        event.filter.copyWith(checked: event.checked) : filter).toList();
 
-        final selected = event.filter.checked ?
-        (currentState.selectedFilters + [event.filter]) :
-        (List<Filter>.from(currentState.selectedFilters)..removeWhere((
-            filter) => event.filter.name == filter.name));
-
-        List<Filter> filters = await this.filterRepository
-            .fetchFiltersWithSelected(selected)..removeWhere((filter) =>
-            selected.any((selectedFilter) => filter.name == selectedFilter.name));
-
-        yield FilterLoaded(filters: filters, selectedFilters: selected);
+        yield FilterLoaded(filters: filters);
       }
     } else if (event is ClearFiltersEvent) {
       if(currentState is FilterLoaded) {
-        yield FilterApplied(selectedFilters: const <Filter>[]);
+        final filters = currentState.filters
+            .map((filter) => filter.copyWith(checked: false))
+            .toList();
+
+        yield FilterLoaded(filters: filters);
       }
-    }else if(event is ApplyFiltersEvent) {
+    } else if (event is ApplyFilters) {
       if(currentState is FilterLoaded) {
-        yield FilterApplied(selectedFilters: currentState.selectedFilters);
+        final selectedFilters = List<Filter>.from(currentState.filters)
+            .where((event) => event.checked == true).toList();
+        this.filteredEventsBloc.add(FilterUpdated(
+          selectedFilter: selectedFilters,
+          facetName: event.facetName,
+        ));
       }
     }
   }

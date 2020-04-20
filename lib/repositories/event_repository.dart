@@ -1,4 +1,5 @@
 import 'package:algolia/algolia.dart';
+import 'package:collection/collection.dart';
 import 'package:confs_tech/models/event_response.dart';
 import 'package:confs_tech/models/events.dart';
 import 'package:confs_tech/models/models.dart';
@@ -36,6 +37,17 @@ class EventRepository {
   }
 
   static List<String> transformFilters(List<Filter> filters) {
-    return filters.map((filter) => '${filter.topic}:${filter.name}').toList();
+    Map<String, List<Filter>> out = groupBy(filters, (filter) => filter.topic);
+
+    List<String> outputList = [];
+
+    final keyLength = out.keys.length;
+
+    for(var i = 0; i < keyLength; i++){
+      outputList.addAll(out[out.keys.elementAt(i)]
+          .map((filter) => '${filter.topic}:${filter.name}'));
+    }
+
+    return outputList;
   }
 }
