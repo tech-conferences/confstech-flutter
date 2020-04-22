@@ -19,6 +19,7 @@ class Twitter extends StatelessWidget {
         InkWell(
           child: Text('・ $twitter',
               style: TextStyle(
+                fontSize: 15,
                 fontWeight: FontWeight.w300,
               )
           ),
