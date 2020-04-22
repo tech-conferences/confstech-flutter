@@ -8,23 +8,33 @@ class FilterRepository {
     apiKey: 'f2534ea79a28d8469f4e81d546297d39',
   );
 
-  Future<List<Filter>> fetchFilters(String facetName) async {
-    return this.fetchFiltersWithSelected(null, facetName);
-  }
-
-  Future<List<Filter>> fetchFiltersWithSelected(List<Filter> selectedFilters, String facetName) async {
+  Future<List<Filter>> fetchFilters(
+      List<Filter> selectedFilters,
+      bool callForPaper,
+      String facetName,
+      bool showPast
+      ) async {
     final int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
 
+    int oneYear = 365 * 24 * 60 * 60;
+
+    String filters = showPast ? 'startDateUnix>${today - oneYear}' : 'startDateUnix>$today';
+
     AlgoliaQuery query = algolia.instance.index('prod_conferences')
-        .setFilters('startDateUnix>$today')
         .setMaxValuesPerFacet(100)
         .setFacets([facetName]);
 
     if(selectedFilters != null && selectedFilters.isNotEmpty) {
       query = query.setFacetFilter(transformFilters(selectedFilters));
     }
+
+    if(callForPaper) {
+      filters += " AND cfpEndDateUnix>$today";
+    }
+
+    query = query.setFilters(filters);
 
     AlgoliaQuerySnapshot snap = await query.getObjects();
 
@@ -41,7 +51,7 @@ class FilterRepository {
 
   static List<String> transformFilters(List<Filter> filters) {
     return filters.map((filter) =>
-        '${filter.topic}:${filter.name}').toList();
+    '${filter.topic}:${filter.name}').toList();
   }
 
 }

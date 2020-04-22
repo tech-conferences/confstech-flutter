@@ -9,11 +9,14 @@ abstract class EventFilterEvent extends Equatable {
 
 class FetchFilters extends EventFilterEvent {
   final String topic;
+  final bool showCallForPaper;
+  final bool showPast;
 
-  FetchFilters({ this.topic = '' });
+  FetchFilters({ this.topic = '', this.showCallForPaper = false,
+    this.showPast = false });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [topic, showCallForPaper, showPast];
 }
 
 class SetFilterCheckboxChecked extends EventFilterEvent {

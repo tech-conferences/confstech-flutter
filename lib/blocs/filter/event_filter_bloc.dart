@@ -27,9 +27,11 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
       try {
         yield FilterLoading();
         final selectedFilters = filteredEventsBloc.state.selectedFilters;
+        final showCallForPaper = filteredEventsBloc.state.showCallForPapers;
+        final showPast = filteredEventsBloc.state.showPast;
 
-        List<Filter> filters = await this.filterRepository
-            .fetchFilters(event.topic);
+        List<Filter> filters = await this.filterRepository.fetchFilters(
+            selectedFilters, showCallForPaper, event.topic, showPast);
 
         final finalFilters = filters.map((fetchedEvent){
           return selectedFilters.any((selectedFilter) =>

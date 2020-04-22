@@ -16,8 +16,8 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
   Stream<FilteredEventsState> transformEvents(Stream<FilteredBlocsEvent> events,
       Stream<FilteredEventsState> Function(FilteredBlocsEvent) next) {
     final nonDebounceStream =
-      events
-          .where((event) => event is! SearchChanged);
+    events
+        .where((event) => event is! SearchChanged);
     final debounceStream = events
         .where((event) => event is SearchChanged)
         .debounceTime(Duration(milliseconds: 300));
@@ -26,38 +26,32 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
 
   @override
   Stream<FilteredEventsState> mapEventToState(
-      FilteredBlocsEvent event,
-      ) async* {
+      FilteredBlocsEvent event,) async* {
     final currentState = state;
     if (event is FilterUpdated) {
-      if(currentState is FilteredEventsLoaded) {
+      if (currentState is FilteredEventsLoaded) {
         final finalFilters = List<Filter>.from(currentState.selectedFilters);
         finalFilters.retainWhere((filter) => filter.topic != event.facetName);
         finalFilters.addAll(event.selectedFilter);
 
-        yield currentState.copyWith(selectedFilters: finalFilters, showPast: false);
+        yield currentState.copyWith(selectedFilters: finalFilters,
+            showPast: false, showCallForPapers: false);
       } else {
-        yield FilteredEventsLoaded(selectedFilters: event.selectedFilter, showPast: false);
+        yield FilteredEventsLoaded(selectedFilters: event.selectedFilter,
+            showPast: false, showCallForPapers: false);
       }
     } else if (event is SearchChanged) {
-      if(currentState is FilteredEventsLoaded) {
-        yield currentState.copyWith(searchQuery: event.searchQuery);
+      if (currentState is FilteredEventsLoaded) {
+        yield currentState.copyWith(
+            searchQuery: event.searchQuery, selectedFilters: const []);
       } else {
-        yield FilteredEventsLoaded(searchQuery: event.searchQuery);
+        yield FilteredEventsLoaded(
+            searchQuery: event.searchQuery, selectedFilters: const []);
       }
     } else if (event is CallForPaperChanged) {
-      if(currentState is FilteredEventsLoaded) {
-        yield currentState.copyWith(showCallForPapers: event.showCallForPapers, showPast: false);
-      } else {
-        yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers, showPast: false);
-      }
+      yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers);
     } else if (event is ShowPastChanged) {
-      if(currentState is FilteredEventsLoaded) {
-        yield currentState.copyWith(showCallForPapers: false,
-            showPast: event.showPast);
-      } else {
-        yield FilteredEventsLoaded(showCallForPapers: false, showPast: event.showPast);
-      }
+      yield FilteredEventsLoaded(showPast: event.showPast);
     }
   }
 }

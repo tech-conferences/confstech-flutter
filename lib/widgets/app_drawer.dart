@@ -41,7 +41,13 @@ class AppDrawer extends StatelessWidget {
                   .add(ShowPastChanged(showPast: true));
               Navigator.of(context).pop();
             },
-          )
+          ),
+//          AboutListTile(
+//            icon: Icon(Icons.info),
+//            applicationName: "Confs.tech",
+//            applicationVersion: "1.0",
+//            applicationLegalese: "© 2020 Leonardo Ferrari and contributors",
+//          )
         ],
       ),
     );
