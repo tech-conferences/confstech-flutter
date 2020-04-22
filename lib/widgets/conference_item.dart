@@ -5,10 +5,14 @@ import 'package:confs_tech/widgets/twitter.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'cfp.dart';
+
 class ConferenceItem extends StatelessWidget {
   final Event event;
+  final bool showCallForPapers;
 
-  const ConferenceItem({Key key, @required this.event}): super(key: key);
+  const ConferenceItem({Key key, @required this.event,
+    @required this.showCallForPapers}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +56,12 @@ class ConferenceItem extends StatelessWidget {
               ),
             ],
           ),
+          this.showCallForPapers ? Column(
+            children: <Widget>[
+              SizedBox(height: 3,),
+              CFP(event.cfpEndDate, event.cfpUrl),
+            ],
+          ) : const SizedBox(),
           SizedBox(height: 3,),
           Row(children: <Widget>[
             Topics(topics: event.topics,),

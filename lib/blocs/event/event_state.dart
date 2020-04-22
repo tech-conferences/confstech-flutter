@@ -20,9 +20,10 @@ class EventLoaded extends EventState {
   final currentQuery;
   final currentPage;
   final List<Filter> selectedFilters;
+  final bool showCallForPapers;
 
   const EventLoaded({@required this.event, this.hasMore, this.currentQuery,
-    this.currentPage, this.selectedFilters})
+    this.currentPage, this.selectedFilters, this.showCallForPapers})
       : assert(event != null);
 
   EventLoaded copyWith({
@@ -31,18 +32,20 @@ class EventLoaded extends EventState {
     String currentQuery,
     int currentPage,
     List<Filter> selectedFilters,
+    bool callForPapers
   }) {
     return EventLoaded(
         event: events ?? this.event,
         hasMore: hasMore ?? this.hasMore,
         currentQuery: currentQuery ?? this.currentQuery,
         currentPage: currentPage ?? this.currentPage,
-        selectedFilters: selectedFilters ?? this.selectedFilters
+        selectedFilters: selectedFilters ?? this.selectedFilters,
+        showCallForPapers: callForPapers ?? this.showCallForPapers
     );
   }
 
   @override
-  List<Object> get props => [event, hasMore, currentPage, currentQuery];
+  List<Object> get props => [event, hasMore, currentPage, currentQuery, showCallForPapers];
 }
 
 class EventError extends EventState {}

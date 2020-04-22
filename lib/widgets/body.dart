@@ -80,8 +80,11 @@ class _SearchBodyState extends State<SearchBody> {
                   ),
                 ],
               ),
-              indexedItemBuilder: (BuildContext context, Event event, int index) {
-                return ConferenceItem(event: event);
+              itemBuilder: (BuildContext context, Event event) {
+                return ConferenceItem(
+                  event: event,
+                  showCallForPapers: state.showCallForPapers,
+                );
               },
               groupSeparatorBuilder: (value) {
                 return CountryHeader(value);

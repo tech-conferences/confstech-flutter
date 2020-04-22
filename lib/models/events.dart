@@ -12,20 +12,15 @@ class Event extends Equatable {
   final String endDate;
   final String twitter;
   final List<dynamic> topics;
+  final String cfpEndDate;
+  final String cfpUrl;
 
   Event({this.id, this.uuid, this.name, this.url, this.city, this.country,
-      this.startDate, this.endDate, this.twitter, this.topics});
+    this.startDate, this.endDate, this.twitter, this.topics, this.cfpEndDate,
+    this.cfpUrl});
 
   @override
   List<Object> get props => [id];
-
-
-  @override
-  String toString() {
-    return 'Event{id: $id, uuid: $uuid, name: $name, url: $url, city: $city,'
-        ' country: $country, startDate: $startDate, endDate: $endDate, '
-        'twitter: $twitter}';
-  }
 
   static Event fromJson(dynamic json){
     return Event(
@@ -38,8 +33,9 @@ class Event extends Equatable {
       startDate: json['startDate'] as String,
       endDate: json['endDate'] as String,
       twitter: json['twitter'] as String,
-      topics: json['topics'] as List<dynamic>
+      topics: json['topics'] as List<dynamic>,
+      cfpEndDate: json['cfpEndDate'] as String,
+      cfpUrl: json['cfpUrl'] as String,
     );
   }
-
 }

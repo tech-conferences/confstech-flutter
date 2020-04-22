@@ -25,3 +25,12 @@ class SearchChanged extends FilteredBlocsEvent {
   @override
   List<Object> get props => [searchQuery];
 }
+
+class CallForPaperChanged extends FilteredBlocsEvent {
+  final bool showCallForPapers;
+
+  CallForPaperChanged({ this.showCallForPapers = false });
+
+  @override
+  List<Object> get props => [showCallForPapers];
+}

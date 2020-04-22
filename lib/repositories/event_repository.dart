@@ -11,13 +11,18 @@ class EventRepository {
     apiKey: 'f2534ea79a28d8469f4e81d546297d39',
   );
 
-  Future<EventResponse> getEvents(String search, int page, List<Filter> selectedFilters) async {
+  Future<EventResponse> getEvents(
+      String search,
+      int page,
+      List<Filter> selectedFilters,
+      bool callForPaper) async {
     int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
 
+    String filters = 'startDateUnix>$today';
+
     AlgoliaQuery query = algolia.instance.index('prod_conferences')
-        .setFilters('startDateUnix>$today')
         .setPage(page)
         .setHitsPerPage(30)
         .search(search);
@@ -25,6 +30,11 @@ class EventRepository {
     if (selectedFilters != null && selectedFilters.isNotEmpty)
       query = query.setFacetFilter(transformFilters(selectedFilters));
 
+    if(callForPaper) {
+      filters += " AND cfpEndDateUnix>$today";
+    }
+
+    query = query.setFilters(filters);
     AlgoliaQuerySnapshot snap = await query.getObjects();
 
     final List<Event> items = snap.hits.map((AlgoliaObjectSnapshot item) =>

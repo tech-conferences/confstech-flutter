@@ -19,7 +19,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       if(state is FilteredEventsLoaded) {
         add(FetchEvent(
             filters: state.selectedFilters,
-            searchQuery: state.searchQuery
+            searchQuery: state.searchQuery,
+            showCallForPapers: state.showCallForPapers
         ));
       }
     });
@@ -41,14 +42,15 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       try {
         yield EventLoading();
         EventResponse response = await this.eventRepository
-            .getEvents(event.searchQuery, event.page, event.filters);
+            .getEvents(event.searchQuery, event.page, event.filters, event.showCallForPapers);
 
         if (response.events.length == 0) {
           yield EventEmpty();
         } else {
           yield EventLoaded(event: response.events, hasMore: response.hasMore,
               currentQuery: event.searchQuery, currentPage: response.page,
-              selectedFilters: response.selectedFilters);
+              selectedFilters: response.selectedFilters,
+              showCallForPapers: event.showCallForPapers);
         }
       } catch (e) {
         print(e);
@@ -60,7 +62,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           EventResponse response = await this.eventRepository
               .getEvents(
               currentState.currentQuery, currentState.currentPage + 1,
-              currentState.selectedFilters);
+              currentState.selectedFilters, currentState.showCallForPapers);
 
           if (response.events.length == 0) {
             yield currentState.copyWith(hasMore: false);
@@ -70,6 +72,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
               hasMore: response.hasMore,
               currentPage: currentState.currentPage + 1,
               selectedFilters: currentState.selectedFilters,
+              callForPapers: currentState.showCallForPapers,
             );
           }
         }

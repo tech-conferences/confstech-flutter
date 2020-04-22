@@ -4,6 +4,7 @@ import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/blocs/event/event_bloc.dart';
 import 'package:confs_tech/blocs/event/event_event.dart';
 import 'package:confs_tech/repositories/event_repository.dart';
+import 'package:confs_tech/widgets/app_drawer.dart';
 import 'package:confs_tech/widgets/body.dart';
 import 'package:confs_tech/widgets/filter_header.dart';
 import 'package:confs_tech/widgets/sliver_search_bar.dart';
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      drawer: AppDrawer(),
     );
   }
 }

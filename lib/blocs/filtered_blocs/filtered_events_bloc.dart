@@ -45,6 +45,12 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
       } else {
         yield FilteredEventsLoaded(searchQuery: event.searchQuery);
       }
+    } else if (event is CallForPaperChanged) {
+      if(currentState is FilteredEventsLoaded) {
+        yield currentState.copyWith(showCallForPapers: event.showCallForPapers);
+      } else {
+        yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers);
+      }
     }
   }
 }

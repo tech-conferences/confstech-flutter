@@ -26,4 +26,16 @@ class Utils {
       return DateFormat.MMMMd().format(parsedStartDate);
     }
   }
+
+  static formatSingleDate(String date) {
+    if(date.length == 7) {
+      //when there is no day, we append it. eg. 2020-02 will be parsed 2020-02-01
+      return DateFormat.MMMM(DateTime.parse('$date-01'));
+    }
+
+    DateTime parsedStartDate = DateTime.parse(date);
+
+    return DateFormat.MMMMd().format(parsedStartDate);
+  }
+
 }
