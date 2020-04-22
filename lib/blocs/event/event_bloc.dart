@@ -20,7 +20,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         add(FetchEvent(
             filters: state.selectedFilters,
             searchQuery: state.searchQuery,
-            showCallForPapers: state.showCallForPapers
+            showCallForPapers: state.showCallForPapers,
+            showPast: state.showPast
         ));
       }
     });
@@ -42,7 +43,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       try {
         yield EventLoading();
         EventResponse response = await this.eventRepository
-            .getEvents(event.searchQuery, event.page, event.filters, event.showCallForPapers);
+            .getEvents(event.searchQuery, event.page, event.filters,
+            event.showCallForPapers, event.showPast);
 
         if (response.events.length == 0) {
           yield EventEmpty();
@@ -50,7 +52,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           yield EventLoaded(event: response.events, hasMore: response.hasMore,
               currentQuery: event.searchQuery, currentPage: response.page,
               selectedFilters: response.selectedFilters,
-              showCallForPapers: event.showCallForPapers);
+              showCallForPapers: event.showCallForPapers,
+              showPast: event.showPast);
         }
       } catch (e) {
         print(e);
@@ -62,17 +65,19 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           EventResponse response = await this.eventRepository
               .getEvents(
               currentState.currentQuery, currentState.currentPage + 1,
-              currentState.selectedFilters, currentState.showCallForPapers);
+              currentState.selectedFilters, currentState.showCallForPapers,
+              currentState.showPast);
 
           if (response.events.length == 0) {
             yield currentState.copyWith(hasMore: false);
           } else {
             yield currentState.copyWith(
-              events: currentState.event + response.events,
-              hasMore: response.hasMore,
-              currentPage: currentState.currentPage + 1,
-              selectedFilters: currentState.selectedFilters,
-              callForPapers: currentState.showCallForPapers,
+                events: currentState.event + response.events,
+                hasMore: response.hasMore,
+                currentPage: currentState.currentPage + 1,
+                selectedFilters: currentState.selectedFilters,
+                callForPapers: currentState.showCallForPapers,
+                showPast: currentState.showPast
             );
           }
         }

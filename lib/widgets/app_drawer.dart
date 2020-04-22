@@ -16,7 +16,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Upcoming events"),
+            title: Text("Upcoming conferences"),
             leading: Icon(Icons.event),
             onTap: (){
               BlocProvider.of<FilteredEventsBloc>(context)
@@ -30,6 +30,15 @@ class AppDrawer extends StatelessWidget {
             onTap: (){
               BlocProvider.of<FilteredEventsBloc>(context)
                   .add(CallForPaperChanged(showCallForPapers: true));
+              Navigator.of(context).pop();
+            },
+          ),
+          ListTile(
+            title: Text("Past conferences"),
+            leading: Icon(Icons.event_available),
+            onTap: (){
+              BlocProvider.of<FilteredEventsBloc>(context)
+                  .add(ShowPastChanged(showPast: true));
               Navigator.of(context).pop();
             },
           )

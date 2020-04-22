@@ -15,12 +15,16 @@ class EventRepository {
       String search,
       int page,
       List<Filter> selectedFilters,
-      bool callForPaper) async {
+      bool callForPaper,
+      bool showPast
+      ) async {
     int today = (new DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
 
-    String filters = 'startDateUnix>$today';
+    int oneYear = 365 * 24 * 60 * 60;
+
+    String filters = showPast ? 'startDateUnix>${today - oneYear}' : 'startDateUnix>$today';
 
     AlgoliaQuery query = algolia.instance.index('prod_conferences')
         .setPage(page)

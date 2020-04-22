@@ -35,9 +35,9 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
         finalFilters.retainWhere((filter) => filter.topic != event.facetName);
         finalFilters.addAll(event.selectedFilter);
 
-        yield currentState.copyWith(selectedFilters: finalFilters);
+        yield currentState.copyWith(selectedFilters: finalFilters, showPast: false);
       } else {
-        yield FilteredEventsLoaded(selectedFilters: event.selectedFilter);
+        yield FilteredEventsLoaded(selectedFilters: event.selectedFilter, showPast: false);
       }
     } else if (event is SearchChanged) {
       if(currentState is FilteredEventsLoaded) {
@@ -47,9 +47,16 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
       }
     } else if (event is CallForPaperChanged) {
       if(currentState is FilteredEventsLoaded) {
-        yield currentState.copyWith(showCallForPapers: event.showCallForPapers);
+        yield currentState.copyWith(showCallForPapers: event.showCallForPapers, showPast: false);
       } else {
-        yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers);
+        yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers, showPast: false);
+      }
+    } else if (event is ShowPastChanged) {
+      if(currentState is FilteredEventsLoaded) {
+        yield currentState.copyWith(showCallForPapers: false,
+            showPast: event.showPast);
+      } else {
+        yield FilteredEventsLoaded(showCallForPapers: false, showPast: event.showPast);
       }
     }
   }

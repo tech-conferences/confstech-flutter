@@ -34,3 +34,12 @@ class CallForPaperChanged extends FilteredBlocsEvent {
   @override
   List<Object> get props => [showCallForPapers];
 }
+
+class ShowPastChanged extends FilteredBlocsEvent {
+  final bool showPast;
+
+  ShowPastChanged({ this.showPast = false });
+
+  @override
+  List<Object> get props => [showPast];
+}
