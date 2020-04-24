@@ -14,7 +14,7 @@ class FilterUpdated extends FilteredBlocsEvent {
   FilterUpdated({ this.selectedFilter = const [], this.facetName = ''});
 
   @override
-  List<Object> get props => [selectedFilter];
+  List<Object> get props => [selectedFilter, facetName];
 }
 
 class SearchChanged extends FilteredBlocsEvent {
@@ -26,20 +26,17 @@ class SearchChanged extends FilteredBlocsEvent {
   List<Object> get props => [searchQuery];
 }
 
-class CallForPaperChanged extends FilteredBlocsEvent {
-  final bool showCallForPapers;
-
-  CallForPaperChanged({ this.showCallForPapers = false });
-
+class UpcomingSelected extends FilteredBlocsEvent {
   @override
-  List<Object> get props => [showCallForPapers];
+  List<Object> get props => [];
 }
 
-class ShowPastChanged extends FilteredBlocsEvent {
-  final bool showPast;
-
-  ShowPastChanged({ this.showPast = false });
-
+class CallForPaperSelected extends FilteredBlocsEvent {
   @override
-  List<Object> get props => [showPast];
+  List<Object> get props => [];
+}
+
+class ShowPastSelected extends FilteredBlocsEvent {
+  @override
+  List<Object> get props => [];
 }

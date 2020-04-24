@@ -9,18 +9,20 @@ class AppDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DrawerHeader(
-            child: Text("Confs.Tech"),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor
-            ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text("Confs.tech",
+              style: TextStyle(
+                fontSize: 24,
+              )
+                ),
           ),
           ListTile(
             title: Text("Upcoming conferences"),
             leading: Icon(Icons.event),
             onTap: (){
               BlocProvider.of<FilteredEventsBloc>(context)
-                  .add(CallForPaperChanged(showCallForPapers: false));
+                  .add(UpcomingSelected());
               Navigator.of(context).pop();
             },
           ),
@@ -29,7 +31,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.note_add),
             onTap: (){
               BlocProvider.of<FilteredEventsBloc>(context)
-                  .add(CallForPaperChanged(showCallForPapers: true));
+                  .add(CallForPaperSelected());
               Navigator.of(context).pop();
             },
           ),
@@ -38,7 +40,7 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(Icons.event_available),
             onTap: (){
               BlocProvider.of<FilteredEventsBloc>(context)
-                  .add(ShowPastChanged(showPast: true));
+                  .add(ShowPastSelected());
               Navigator.of(context).pop();
             },
           ),

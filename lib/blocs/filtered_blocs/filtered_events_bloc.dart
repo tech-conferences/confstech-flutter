@@ -48,10 +48,12 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
         yield FilteredEventsLoaded(
             searchQuery: event.searchQuery, selectedFilters: const []);
       }
-    } else if (event is CallForPaperChanged) {
-      yield FilteredEventsLoaded(showCallForPapers: event.showCallForPapers);
-    } else if (event is ShowPastChanged) {
-      yield FilteredEventsLoaded(showPast: event.showPast);
+    }else if(event is UpcomingSelected) {
+      yield FilteredEventsLoaded();
+    } else if (event is CallForPaperSelected) {
+      yield FilteredEventsLoaded(showCallForPapers: true);
+    } else if (event is ShowPastSelected) {
+      yield FilteredEventsLoaded(showPast: true);
     }
   }
 }
