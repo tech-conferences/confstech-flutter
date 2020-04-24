@@ -9,7 +9,7 @@ class FilterHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.only(top: 16, bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

@@ -5,6 +5,7 @@ import 'package:confs_tech/libs/grouped_list.dart';
 import 'package:confs_tech/models/models.dart';
 import 'package:confs_tech/widgets/conference_item.dart';
 import 'package:confs_tech/widgets/country_header.dart';
+import 'package:confs_tech/widgets/filter_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -61,37 +62,42 @@ class _SearchBodyState extends State<SearchBody> {
             ],
           );
         }else if(state is EventLoaded){
-          return GroupedListView<Event, String>(
-              separator: Divider(),
-              shrinkWrap: true,
-              elements: state.event,
-              hasFooter: state.hasMore,
-              renderFooter: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: RaisedButton(
-                      child: Text('Load More...'),
-                      onPressed: (){
-                        eventBloc.add(LoadMoreEvent());
-                      },
-                    ),
+          return Column(
+            children: <Widget>[
+              FilterHeader(),
+              GroupedListView<Event, String>(
+                  separator: Divider(),
+                  shrinkWrap: true,
+                  elements: state.event,
+                  hasFooter: state.hasMore,
+                  renderFooter: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: RaisedButton(
+                          child: Text('Load More...'),
+                          onPressed: (){
+                            eventBloc.add(LoadMoreEvent());
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              itemBuilder: (BuildContext context, Event event) {
-                return ConferenceItem(
-                  event: event,
-                  showCallForPapers: state.showCallForPapers,
-                );
-              },
-              groupSeparatorBuilder: (value) {
-                return CountryHeader(value);
-              },
-              groupBy: (Event element) {
-                return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
-              });
+                  itemBuilder: (BuildContext context, Event event) {
+                    return ConferenceItem(
+                      event: event,
+                      showCallForPapers: state.showCallForPapers,
+                    );
+                  },
+                  groupSeparatorBuilder: (value) {
+                    return CountryHeader(value);
+                  },
+                  groupBy: (Event element) {
+                    return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
+                  }),
+            ],
+          );
         }else if (state is EventError){
           return Container(
             child: Column(
