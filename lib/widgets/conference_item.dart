@@ -1,5 +1,6 @@
 import 'package:confs_tech/models/events.dart';
 import 'package:confs_tech/utils/utils.dart';
+import 'package:confs_tech/widgets/conference_location.dart';
 import 'package:confs_tech/widgets/topics.dart';
 import 'package:confs_tech/widgets/twitter.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,7 @@ class ConferenceItem extends StatelessWidget {
           SizedBox(height: 3,),
           Row(
             children: <Widget>[
-              Text('${event.city}, ${event.country}',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16,),
-              ),
+              ConferenceLocation(event.city, event.country),
               Text('・', style: TextStyle(fontWeight: FontWeight.w500)),
               Text(Utils.formatDate(event.startDate, event.endDate),
                   style: TextStyle(
