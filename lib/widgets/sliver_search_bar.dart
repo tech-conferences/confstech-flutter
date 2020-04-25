@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
-class SliverSearchBar extends StatefulWidget {
+class SearchBar extends StatefulWidget implements PreferredSizeWidget {
   final List<Widget> actions;
   final Function(String) onSearchTextChanged;
 
-  const SliverSearchBar({Key key, this.actions, this.onSearchTextChanged})
+  const SearchBar({Key key, this.actions, this.onSearchTextChanged})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _SliverSearchBar(actions: actions, onSearchTextChanged: onSearchTextChanged);
+    return _SearchBar(actions: actions, onSearchTextChanged: onSearchTextChanged);
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
 
-class _SliverSearchBar extends State<SliverSearchBar> {
+class _SearchBar extends State<SearchBar> {
   final TextEditingController _filter = new TextEditingController();
   Widget _appBarTitle = new Text('Confs.tech');
 
@@ -21,7 +24,7 @@ class _SliverSearchBar extends State<SliverSearchBar> {
   Function(String) onSearchTextChanged;
   bool isInSearchMode = false;
 
-  _SliverSearchBar({ this.actions, this.onSearchTextChanged });
+  _SearchBar({ this.actions, this.onSearchTextChanged });
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +41,7 @@ class _SliverSearchBar extends State<SliverSearchBar> {
           return true;
         }
       },
-      child: new SliverAppBar(
-        pinned: true,
+      child: new AppBar(
         title: _appBarTitle,
         leading: isInSearchMode ? IconButton(
           icon: Icon(Icons.arrow_back),

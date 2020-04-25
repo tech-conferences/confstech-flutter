@@ -43,10 +43,10 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
     } else if (event is SearchChanged) {
       if (currentState is FilteredEventsLoaded) {
         yield currentState.copyWith(
-            searchQuery: event.searchQuery, selectedFilters: const []);
+            searchQuery: event.searchQuery, selectedFilters: const <Filter>[]);
       } else {
         yield FilteredEventsLoaded(
-            searchQuery: event.searchQuery, selectedFilters: const []);
+            searchQuery: event.searchQuery, selectedFilters: const <Filter>[]);
       }
     }else if(event is UpcomingSelected) {
       yield FilteredEventsLoaded();

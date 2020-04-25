@@ -17,29 +17,28 @@ class SearchBody extends StatefulWidget {
 }
 
 class _SearchBodyState extends State<SearchBody> {
-  final scrollController = ScrollController();
-  final scrollThreshold = 200.0;
-  EventBloc eventBloc;
+  final _scrollController = ScrollController();
+  final _scrollThreshold = 200.0;
+  EventBloc _eventBloc;
 
   @override
   void initState() {
     super.initState();
-    scrollController.addListener(onScroll);
-    eventBloc = BlocProvider.of(context);
+    _eventBloc = BlocProvider.of(context);
   }
 
   @override
   void dispose() {
-    scrollController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void onScroll() {
-    final maxScroll = scrollController.position.maxScrollExtent;
-    final currentScroll = scrollController.position.pixels;
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
 
-    if (maxScroll - currentScroll <= scrollThreshold) {
-      eventBloc.add(LoadMoreEvent());
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _eventBloc.add(LoadMoreEvent());
     }
   }
 
@@ -49,12 +48,7 @@ class _SearchBodyState extends State<SearchBody> {
       bloc: BlocProvider.of(context),
       builder: (BuildContext context, EventState state){
         if(state is EventLoading){
-          return Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Align(
-                child: CircularProgressIndicator()
-            ),
-          );
+          return Align(child: CircularProgressIndicator());
         }else if(state is EventEmpty){
           return Column(
             children: <Widget>[
@@ -62,62 +56,63 @@ class _SearchBodyState extends State<SearchBody> {
             ],
           );
         }else if(state is EventLoaded){
-          return Column(
-            children: <Widget>[
-              FilterHeader(),
-              GroupedListView<Event, String>(
-                  separator: Divider(),
-                  shrinkWrap: true,
-                  elements: state.event,
-                  hasFooter: state.hasMore,
-                  renderFooter: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(bottom: 12),
-                        child: RaisedButton(
-                          child: Text('Load More...'),
-                          onPressed: (){
-                            eventBloc.add(LoadMoreEvent());
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  itemBuilder: (BuildContext context, Event event) {
-                    return ConferenceItem(
-                      event: event,
-                      showCallForPapers: state.showCallForPapers,
-                    );
-                  },
-                  groupSeparatorBuilder: (value) {
-                    return CountryHeader(value);
-                  },
-                  groupBy: (Event element) {
-                    return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
-                  }),
-            ],
-          );
-        }else if (state is EventError){
-          return Container(
+          return SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'An error has ocurred :(',
-                        style: TextStyle(fontSize: 26),
-                      ),
-                      RaisedButton(
-                        onPressed: (){
-                          eventBloc.add(FetchEvent());
-                        },
-                        child: Text('Try again'),
-                      )
-                    ],
-                  ),
+                FilterHeader(),
+                GroupedListView<Event, String>(
+                    separator: Divider(),
+                    shrinkWrap: true,
+                    primary: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    elements: state.event,
+                    hasFooter: state.hasMore,
+                    renderFooter: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: RaisedButton(
+                            child: Text('Load More...'),
+                            onPressed: (){
+                              _eventBloc.add(LoadMoreEvent());
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    itemBuilder: (BuildContext context, Event event) {
+                      return ConferenceItem(
+                        event: event,
+                        showCallForPapers: state.showCallForPapers,
+                      );
+                    },
+                    groupSeparatorBuilder: (value) {
+                      return CountryHeader(value);
+                    },
+                    groupBy: (Event element) {
+                      return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
+                    }),
+              ],
+            ),
+          );
+        }else if (state is EventError){
+          return Center(
+            child: Column(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Text(
+                      'An error has ocurred :(',
+                      style: TextStyle(fontSize: 26),
+                    ),
+                    RaisedButton(
+                      onPressed: (){
+                        _eventBloc.add(FetchEvent());
+                      },
+                      child: Text('Try again'),
+                    )
+                  ],
                 )
               ],
             ),
