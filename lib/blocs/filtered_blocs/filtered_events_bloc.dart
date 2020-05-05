@@ -13,15 +13,18 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
   FilteredEventsState get initialState => FilteredEventsLoading();
 
   @override
-  Stream<FilteredEventsState> transformEvents(Stream<FilteredBlocsEvent> events,
-      Stream<FilteredEventsState> Function(FilteredBlocsEvent) next) {
+  Stream<Transition<FilteredBlocsEvent, FilteredEventsState>>
+  transformTransitions(
+      Stream<Transition<FilteredBlocsEvent, FilteredEventsState>> transitions) {
+
     final nonDebounceStream =
-    events
-        .where((event) => event is! SearchChanged);
-    final debounceStream = events
-        .where((event) => event is SearchChanged)
+    transitions
+        .where((transition) => transition.event is! SearchChanged);
+    final debounceStream = transitions
+        .where((transition) => transition.event is SearchChanged)
         .debounceTime(Duration(milliseconds: 300));
-    return MergeStream([nonDebounceStream, debounceStream]).switchMap(next);
+
+    return super.transformTransitions(MergeStream([nonDebounceStream, debounceStream]));
   }
 
   @override

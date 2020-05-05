@@ -29,6 +29,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SearchBar(
+//        actions: <Widget>[
+//          PopupMenuButton(
+//            itemBuilder: (context){
+//              return {'Settings'}.map((item) =>
+//                  PopupMenuItem(
+//                      value: item,
+//                      child: Text(item)
+//                  )
+//              ).toList();
+//            },
+//          )
+//        ],
         onSearchTextChanged: (text) {
           BlocProvider.of<FilteredEventsBloc>(context)
               .add(SearchChanged(searchQuery: text));
@@ -38,7 +50,7 @@ class _HomePageState extends State<HomePage> {
         child:  MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (BuildContext ctx) => _eventBloc
+                create: (BuildContext ctx) => _eventBloc
             ),
             BlocProvider(
               create: (BuildContext ctx) =>
