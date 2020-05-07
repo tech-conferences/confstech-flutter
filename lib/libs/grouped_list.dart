@@ -9,7 +9,7 @@ class GroupedListView<T, E> extends StatefulWidget {
   final Widget Function(E value) groupSeparatorBuilder;
   final Widget Function(BuildContext context, T element) itemBuilder;
   final Widget Function(BuildContext context, T element, int index)
-      indexedItemBuilder;
+  indexedItemBuilder;
   final GroupedListOrder order;
   final bool useStickyGroupSeparators;
   final Widget separator;
@@ -25,8 +25,8 @@ class GroupedListView<T, E> extends StatefulWidget {
   final bool addRepaintBoundaries;
   final bool addSemanticIndexes;
   final double cacheExtent;
-  final bool hasFooter;
   final Widget renderFooter;
+  final Widget renderHeader;
 
   GroupedListView({
     @required this.elements,
@@ -48,8 +48,8 @@ class GroupedListView<T, E> extends StatefulWidget {
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
     this.cacheExtent,
-    this.hasFooter = false,
     this.renderFooter,
+    this.renderHeader
   }) : super(key: key);
 
   @override
@@ -67,18 +67,20 @@ class _GroupedLisdtViewState<T, E> extends State<GroupedListView<T, E>> {
   @override
   void dispose() {
     _controller.removeListener(_scrollListener);
-    _controller.dispose();
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     this._sortedElements = widget.elements;
-    final itemCount = (widget.hasFooter ? 1 : 0) + _sortedElements.length * 2;
-    return Column(
+    final itemCount = (widget.renderFooter != null ? 1 : 0) + _sortedElements.length * 2;
+    return Stack(
       key: _key,
+      alignment: Alignment.topCenter,
       children: <Widget>[
-        _showFixedGroupHeader(),
         ListView.builder(
           scrollDirection: widget.scrollDirection,
           controller: _getController(),
@@ -97,12 +99,25 @@ class _GroupedLisdtViewState<T, E> extends State<GroupedListView<T, E>> {
               if (widget.useStickyGroupSeparators) {
                 return const SizedBox.shrink();
               }
+
+              if (widget.renderHeader != null) {
+                return Column(
+                  children: <Widget>[
+                    widget.renderHeader,
+                    Container(
+                      width: double.maxFinite,
+                      child: widget.groupSeparatorBuilder(
+                          widget.groupBy(_sortedElements[actualIndex])),
+                    )
+                  ],
+                );
+              }
+
               return widget.groupSeparatorBuilder(
                   widget.groupBy(_sortedElements[actualIndex]));
             }
 
-            if(actualIndex == _sortedElements.length && widget.hasFooter &&
-            widget.renderFooter != null){
+            if(actualIndex == _sortedElements.length && widget.renderFooter != null){
               return widget.renderFooter;
             }
 
@@ -118,6 +133,7 @@ class _GroupedLisdtViewState<T, E> extends State<GroupedListView<T, E>> {
             return _buildItem(context, actualIndex);
           },
         ),
+        _showFixedGroupHeader(),
       ],
     );
   }
@@ -130,12 +146,12 @@ class _GroupedLisdtViewState<T, E> extends State<GroupedListView<T, E>> {
         child: widget.indexedItemBuilder == null
             ? widget.itemBuilder(context, _sortedElements[actualIndex])
             : widget.indexedItemBuilder(
-                context, _sortedElements[actualIndex], actualIndex));
+            context, _sortedElements[actualIndex], actualIndex));
   }
 
   ScrollController _getController() {
     _controller =
-        widget.controller == null ? ScrollController() : widget.controller;
+    widget.controller == null ? ScrollController() : widget.controller;
     if (widget.useStickyGroupSeparators) {
       _controller.addListener(_scrollListener);
     }

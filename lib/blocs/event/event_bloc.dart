@@ -75,9 +75,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
                 events: currentState.event + response.events,
                 hasMore: response.hasMore,
                 currentPage: currentState.currentPage + 1,
-                selectedFilters: currentState.selectedFilters,
-                callForPapers: currentState.showCallForPapers,
-                showPast: currentState.showPast
             );
           }
         }

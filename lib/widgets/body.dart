@@ -23,12 +23,23 @@ class _SearchBodyState extends State<SearchBody> {
 
   @override
   void initState() {
-    super.initState();
     _eventBloc = BlocProvider.of(context);
+
+    // https://github.com/flutter/flutter/issues/20819
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.addListener(() {
+        if (!_scrollController.position.isScrollingNotifier.hasListeners) {
+          _scrollController.position.isScrollingNotifier.addListener(_onScroll);
+        }
+      });
+    });
+
+    super.initState();
   }
 
   @override
   void dispose() {
+    _scrollController.position.isScrollingNotifier.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
@@ -56,46 +67,32 @@ class _SearchBodyState extends State<SearchBody> {
             ],
           );
         }else if(state is EventLoaded){
-          return SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                FilterHeader(),
-                GroupedListView<Event, String>(
-                    separator: Divider(),
-                    shrinkWrap: true,
-                    primary: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    elements: state.event,
-                    hasFooter: state.hasMore,
-                    renderFooter: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(bottom: 12),
-                          child: RaisedButton(
-                            child: Text('Load More...'),
-                            onPressed: (){
-                              _eventBloc.add(LoadMoreEvent());
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    itemBuilder: (BuildContext context, Event event) {
-                      return ConferenceItem(
-                        event: event,
-                        showCallForPapers: state.showCallForPapers,
-                      );
-                    },
-                    groupSeparatorBuilder: (value) {
-                      return CountryHeader(value);
-                    },
-                    groupBy: (Event element) {
-                      return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
-                    }),
-              ],
-            ),
-          );
+          return GroupedListView<Event, String>(
+              separator: Divider(),
+              controller: _scrollController,
+              elements: state.event,
+              renderFooter: state.hasMore ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                ],
+              ) : Container(),
+              renderHeader: FilterHeader(),
+              itemBuilder: (BuildContext context, Event event) {
+                return ConferenceItem(
+                  event: event,
+                  showCallForPapers: state.showCallForPapers,
+                );
+              },
+              groupSeparatorBuilder: (value) {
+                return CountryHeader(value);
+              },
+              groupBy: (Event element) {
+                return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
+              });
         }else if (state is EventError){
           return Center(
             child: Column(
