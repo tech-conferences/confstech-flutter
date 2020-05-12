@@ -1,6 +1,7 @@
 import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/blocs/event/event_bloc.dart';
 import 'package:confs_tech/blocs/event/event_event.dart';
+import 'package:confs_tech/dialog/about_dialog.dart' as ConfsAboutDialog;
 import 'package:confs_tech/repositories/event_repository.dart';
 import 'package:confs_tech/widgets/body.dart';
 import 'package:confs_tech/widgets/main_bottom_bar.dart';
@@ -29,18 +30,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SearchBar(
-//        actions: <Widget>[
-//          PopupMenuButton(
-//            itemBuilder: (context){
-//              return {'Settings'}.map((item) =>
-//                  PopupMenuItem(
-//                      value: item,
-//                      child: Text(item)
-//                  )
-//              ).toList();
-//            },
-//          )
-//        ],
+        actions: <Widget>[
+          PopupMenuButton(
+            itemBuilder: (context){
+              return {'Feedback', 'About'}.map((item) =>
+                  PopupMenuItem(
+                    value: item,
+                    child: Text(item),
+                  )
+              ).toList();
+            },
+            onSelected: (selected) {
+              if (selected == 'Feedback') {
+                Navigator.pushNamed(context, '/feedback');
+              } else if (selected == 'About') {
+                showAboutDialog(
+                    context: context,
+                    applicationName: "Confs.tech",
+                    applicationIcon: FlutterLogo(),
+                    applicationVersion: "1.0",
+                    children: [
+                      ConfsAboutDialog.AboutDialog()
+                    ]
+                );
+              }
+            },
+          )
+        ],
         onSearchTextChanged: (text) {
           BlocProvider.of<FilteredEventsBloc>(context)
               .add(SearchChanged(searchQuery: text));
