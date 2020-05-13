@@ -44,18 +44,21 @@ class _TopicFilterState extends State<TopicFilter>
         } else if (state is FilterLoaded){
           return Container(
             width: double.maxFinite,
-            child: ListView(
-                children: state.filters.map((filter) =>
-                    CheckboxListTile(
-                      value: filter.checked,
-                      title: Text('${filter.name} (${filter.count})'),
-                      onChanged: (bool changed){
-                        BlocProvider.of<EventFilterBloc>(context)
-                            .add(SetFilterCheckboxChecked(filter, changed)
-                        );
-                      },
-                    )
-                ).toList()
+            child: ListView.builder(
+              itemCount: state.filters.length,
+              itemBuilder: (context, index){
+                final filter = state.filters[index];
+                return CheckboxListTile(
+                  secondary: Icon(Icons.label_outline),
+                  value: filter.checked,
+                  title: Text('${filter.name} (${filter.count})'),
+                  onChanged: (bool changed){
+                    BlocProvider.of<EventFilterBloc>(context)
+                        .add(SetFilterCheckboxChecked(filter, changed)
+                    );
+                  },
+                );
+              },
             ),
           );
         } else {
