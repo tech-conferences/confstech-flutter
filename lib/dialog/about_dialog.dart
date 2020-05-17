@@ -94,9 +94,20 @@ class AboutDialog extends StatelessWidget {
                         launch("https://www.linkedin.com/in/leonardo2204/");
                       }
                     }
-                )
+                ),
               ]
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text("Search engine",
+              style: TextStyle(fontSize: 26)
+          ),
+        ),
+        Row(
+          children: <Widget>[
+            Image(image: AssetImage("images/algolia.png")),
+          ],
         )
       ],
     );
