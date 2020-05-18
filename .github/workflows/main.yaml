@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '12.x'
-      - run: echo $KEY_JKS | base64 -d > android/app/key.jks
+      - run: echo $KEY_JKS | base64 -d > android/app/mykey.jks
         env:
           KEY_JKS: ${{ secrets.ANDROID_SIGNINKEYBASE64 }}
       - uses: subosito/flutter-action@v1
@@ -24,7 +24,7 @@ jobs:
           KEY_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTOREPASSWORD }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEYPASSWORD }}
           ALIAS: ${{ secrets.ANDROID_ALIAS }}
-          KEY_PATH: key.jks
+          KEY_PATH: mykey.jks
       - uses: actions/upload-artifact@v2
         with:
           name: Release AAB
