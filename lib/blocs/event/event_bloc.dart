@@ -55,6 +55,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
               showCallForPapers: event.showCallForPapers,
               showPast: event.showPast);
         }
+        yield EventError();
       } catch (e) {
         print(e);
         yield EventError();

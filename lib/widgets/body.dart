@@ -96,20 +96,17 @@ class _SearchBodyState extends State<SearchBody> {
         }else if (state is EventError){
           return Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Text(
-                      'An error has ocurred :(',
-                      style: TextStyle(fontSize: 26),
-                    ),
-                    RaisedButton(
-                      onPressed: (){
-                        _eventBloc.add(FetchEvent());
-                      },
-                      child: Text('Try again'),
-                    )
-                  ],
+                Text(
+                  'An error has ocurred :(',
+                  style: TextStyle(fontSize: 26),
+                ),
+                RaisedButton(
+                  onPressed: (){
+                    _eventBloc.add(FetchEvent());
+                  },
+                  child: Text('Try again'),
                 )
               ],
             ),
