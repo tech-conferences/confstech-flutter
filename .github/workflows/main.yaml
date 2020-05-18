@@ -19,12 +19,13 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter pub get
-      - run: flutter build appbundle
+      - run: flutter build appbundle --dart-define=GH_TOKEN=$TOKEN
         env:
           KEY_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTOREPASSWORD }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEYPASSWORD }}
           ALIAS: ${{ secrets.ANDROID_ALIAS }}
           KEY_PATH: androidsign.jks
+          TOKEN: ${{ secrets.TOKEN }}
       - uses: actions/upload-artifact@v2
         with:
           name: Release AAB

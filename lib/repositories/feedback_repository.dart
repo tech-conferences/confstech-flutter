@@ -10,11 +10,12 @@ class FeedbackRepository {
 
   Future<bool> sendFeedback(String title, String comment) async {
     try {
+      const GH_TOKEN = String.fromEnvironment('GH_TOKEN');
       final response = await httpClient
           .post('https://api.github.com/repos/leonardo2204/confstech-flutter/issues',
           headers: {
             'Accept': 'application/vnd.github.v3+json',
-            'Authorization': 'token 8dc2921317294d332dff3b7294156ecf47309304'
+            'Authorization': 'token $GH_TOKEN'
           },
           body: jsonEncode({'title': title, 'body': comment}));
 
