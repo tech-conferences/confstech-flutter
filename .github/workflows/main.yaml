@@ -13,8 +13,8 @@ jobs:
         with:
           java-version: '12.x'
       - run: echo $KEY_JKS > android/app/key.jks
-          env:
-            KEY_JKS: ${{ secrets.ANDROID_SIGNINKEYBASE64 }}
+        env:
+          KEY_JKS: ${{ secrets.ANDROID_SIGNINKEYBASE64 }}
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
