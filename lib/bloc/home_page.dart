@@ -47,7 +47,11 @@ class _HomePageState extends State<HomePage> {
                 showAboutDialog(
                     context: context,
                     applicationName: "Confs.tech",
-                    applicationIcon: FlutterLogo(),
+                    applicationIcon: Image(
+                      image: AssetImage("images/logo_icon.png"),
+                      width: 32,
+                      height: 32,
+                    ),
                     applicationVersion: "1.0",
                     children: [
                       ConfsAboutDialog.AboutDialog()
