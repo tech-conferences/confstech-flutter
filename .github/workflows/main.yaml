@@ -15,15 +15,11 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
-      - run: flutter pub get
-      - run: flutter build appbundle
-      - uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNINKEYBASE64 }}
-          alias: ${{ secrets.ANDROID_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTOREPASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEYPASSWORD }}
+        env:
+          KEY_JKS: ${{ secrets.ANDROID_SIGNINKEYBASE64 }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTOREPASSWORD }}
+          ALIAS_PASSWORD: ${{ secrets.ANDROID_KEYPASSWORD }}
+          run: echo $KEY_JKS > key.jks && flutter pub get && flutter test && flutter build appbundle
       - uses: actions/upload-artifact@v2
         with:
           name: Release AAB
