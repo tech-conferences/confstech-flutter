@@ -37,6 +37,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   icon: Icon(Icons.send),
                   onPressed: () {
                     if (_formKey.currentState.validate()){
+                      FocusScope.of(context).unfocus();
                       BlocProvider.of<FeedbackBloc>(context)
                           .add(SendFeedbackEvent(
                           title: _titleController.text,

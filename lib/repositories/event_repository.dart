@@ -59,7 +59,7 @@ class EventRepository {
 
     for(var i = 0; i < keyLength; i++){
       outputList.addAll(out[out.keys.elementAt(i)]
-          .map((filter) => '${filter.topic}:${filter.name}'));
+          .map((filter) => '${filter.topic}:${filter.key}'));
     }
 
     return outputList;

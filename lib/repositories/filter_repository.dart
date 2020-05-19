@@ -1,5 +1,6 @@
 import 'package:algolia/algolia.dart';
 import 'package:confs_tech/models/models.dart';
+import 'package:confs_tech/utils/topics.dart';
 
 class FilterRepository {
 
@@ -14,11 +15,11 @@ class FilterRepository {
       String facetName,
       bool showPast
       ) async {
-    final int today = (new DateTime.now()
+    final int today = (DateTime.now()
         .millisecondsSinceEpoch / 1000)
         .round();
 
-    int oneYear = 365 * 24 * 60 * 60;
+    const int oneYear = 365 * 24 * 60 * 60;
 
     String filters = showPast ? 'startDateUnix>${today - oneYear}' : 'startDateUnix>$today';
 
@@ -42,7 +43,11 @@ class FilterRepository {
 
     snap.facets.entries.forEach((facet) {
       (facet.value as Map<String, dynamic>).forEach((name, count) {
-        output.add(Filter(name: name, count: count, checked: false, topic: facet.key));
+        if (facetName == 'topics') {
+          output.add(Filter(key: name, name: TOPICS[name], count: count, checked: false, topic: facet.key));
+        } else {
+          output.add(Filter(key: name, name: name, count: count, checked: false, topic: facet.key));
+        }
       });
     });
 
@@ -51,7 +56,7 @@ class FilterRepository {
 
   static List<String> transformFilters(List<Filter> filters) {
     return filters.map((filter) =>
-    '${filter.topic}:${filter.name}').toList();
+    '${filter.topic}:${filter.key}').toList();
   }
 
 }

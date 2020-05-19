@@ -46,7 +46,7 @@ class EventFilterBloc extends Bloc<EventFilterEvent, EventFilterState> {
     } else if (event is SetFilterCheckboxChecked) {
       if(currentState is FilterLoaded) {
         final filters = currentState.filters
-            .map((filter) => filter.name == event.filter.name ?
+            .map((filter) => filter.key == event.filter.key ?
         event.filter.copyWith(checked: event.checked) : filter).toList();
 
         yield FilterLoaded(filters: filters);
