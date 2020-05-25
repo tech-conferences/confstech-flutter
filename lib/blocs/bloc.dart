@@ -1,3 +1,6 @@
+export 'bottom_bar/bottom_bar_bloc.dart';
+export 'bottom_bar/bottom_bar_event.dart';
+export 'bottom_bar/bottom_bar_state.dart';
 export 'event/event_bloc.dart';
 export 'event/event_event.dart';
 export 'event/event_state.dart';

@@ -1,5 +1,7 @@
+import 'package:confs_tech/blocs/bloc.dart';
 import 'package:confs_tech/widgets/ellipsis_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchBar extends StatefulWidget implements PreferredSizeWidget  {
   final List<Widget> actions;
@@ -75,24 +77,31 @@ class _SearchBarState extends State<SearchBar> with SingleTickerProviderStateMix
       },
       child: Stack(
           children: [
-            AppBar(
-              backgroundColor: isInSearchMode ?
-              Colors.white : Theme.of(context).primaryColor,
-              title: _appBarTitle,
-              leading: isInSearchMode ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: _toggleAppBarStatus,
-              ) : null,
-              actions: List.unmodifiable(() sync* {
-                if (!isInSearchMode) yield
-                GestureDetector(
-                  child: Icon(Icons.search),
-                  onTapUp: onSearchTapUp,
-                );
-                if (!isInSearchMode && this.actions != null) {
-                  yield* this.actions;
+            BlocListener<BottomBarBloc, BottomBarState>(
+              listener: (BuildContext context, BottomBarState state) {
+                if (state is BottomBarSelectedSuccess && isInSearchMode) {
+                  _toggleAppBarStatus();
                 }
-              }()),
+              },
+              child: AppBar(
+                backgroundColor: isInSearchMode ?
+                Colors.white : Theme.of(context).primaryColor,
+                title: _appBarTitle,
+                leading: isInSearchMode ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: _toggleAppBarStatus,
+                ) : null,
+                actions: List.unmodifiable(() sync* {
+                  if (!isInSearchMode) yield
+                  GestureDetector(
+                    child: Icon(Icons.search),
+                    onTapUp: onSearchTapUp,
+                  );
+                  if (!isInSearchMode && this.actions != null) {
+                    yield* this.actions;
+                  }
+                }()),
+              ),
             ),
             !isInSearchMode ? AnimatedBuilder(
               animation: _animation,
