@@ -33,20 +33,20 @@ class AboutDialog extends StatelessWidget {
           child: RichText(
             text: TextSpan(
                 children: [
-                  TextSpan(text: "The original application and all conferences are open source at ",
+                  TextSpan(text: "The original application and all conferences are available at ",
                       style: TextStyle(
                           color: Colors.black
                       )
                   ),
                   TextSpan(
-                      text: "github.com/tech-conferences/confs.tech",
+                      text: "confs.tech.",
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()..onTap = () async {
-                        if (await canLaunch("https://github.com/tech-conferences/confs.tech")) {
-                          launch("https://github.com/tech-conferences/confs.tech");
+                        if (await canLaunch("https://confs.tech")) {
+                          launch("https://confs.tech");
                         }
                       }
                   ),
@@ -106,7 +106,14 @@ class AboutDialog extends StatelessWidget {
         ),
         Row(
           children: <Widget>[
-            Image(image: AssetImage("images/algolia.png")),
+            InkWell(
+                onTap: () async {
+                  if (await canLaunch("https://www.algolia.com")) {
+                    launch("https://www.algolia.com");
+                  }
+                },
+                child: Image(image: AssetImage("images/algolia.png"))
+            ),
           ],
         )
       ],

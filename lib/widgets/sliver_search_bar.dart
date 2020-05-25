@@ -21,7 +21,7 @@ class _SearchBarState extends State<SearchBar> with SingleTickerProviderStateMix
   final TextEditingController _filter = new TextEditingController();
   final List<Widget> actions;
 
-  Widget _appBarTitle = new Text('Confs.tech');
+  Widget _appBarTitle = const Text('Confs.tech');
   Function(String) onSearchTextChanged;
   bool isInSearchMode = false;
   double rippleStartX, rippleStartY;
@@ -116,7 +116,7 @@ class _SearchBarState extends State<SearchBar> with SingleTickerProviderStateMix
     setState(() {
       if (!isInSearchMode) {
         isInSearchMode = true;
-        this._appBarTitle = new TextField(
+        this._appBarTitle = TextField(
           onChanged: (text){
             if(onSearchTextChanged != null)
               onSearchTextChanged(_filter.text);
