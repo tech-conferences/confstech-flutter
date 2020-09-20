@@ -7,29 +7,27 @@ import 'package:rxdart/rxdart.dart';
 import '../bloc.dart';
 
 class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
-  FilteredEventsBloc();
-
-  @override
-  FilteredEventsState get initialState => FilteredEventsLoading();
+  FilteredEventsBloc() : super(FilteredEventsLoading());
 
   @override
   Stream<Transition<FilteredBlocsEvent, FilteredEventsState>>
-  transformTransitions(
-      Stream<Transition<FilteredBlocsEvent, FilteredEventsState>> transitions) {
-
+      transformTransitions(
+          Stream<Transition<FilteredBlocsEvent, FilteredEventsState>>
+              transitions) {
     final nonDebounceStream =
-    transitions
-        .where((transition) => transition.event is! SearchChanged);
+        transitions.where((transition) => transition.event is! SearchChanged);
     final debounceStream = transitions
         .where((transition) => transition.event is SearchChanged)
         .debounceTime(Duration(milliseconds: 300));
 
-    return super.transformTransitions(MergeStream([nonDebounceStream, debounceStream]));
+    return super
+        .transformTransitions(MergeStream([nonDebounceStream, debounceStream]));
   }
 
   @override
   Stream<FilteredEventsState> mapEventToState(
-      FilteredBlocsEvent event,) async* {
+    FilteredBlocsEvent event,
+  ) async* {
     final currentState = state;
     if (event is FilterUpdated) {
       if (currentState is FilteredEventsLoaded) {
@@ -37,11 +35,15 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
         finalFilters.retainWhere((filter) => filter.topic != event.facetName);
         finalFilters.addAll(event.selectedFilter);
 
-        yield currentState.copyWith(selectedFilters: finalFilters,
-            showPast: false, showCallForPapers: false);
+        yield currentState.copyWith(
+            selectedFilters: finalFilters,
+            showPast: false,
+            showCallForPapers: false);
       } else {
-        yield FilteredEventsLoaded(selectedFilters: event.selectedFilter,
-            showPast: false, showCallForPapers: false);
+        yield FilteredEventsLoaded(
+            selectedFilters: event.selectedFilter,
+            showPast: false,
+            showCallForPapers: false);
       }
     } else if (event is SearchChanged) {
       if (currentState is FilteredEventsLoaded) {
@@ -51,7 +53,7 @@ class FilteredEventsBloc extends Bloc<FilteredBlocsEvent, FilteredEventsState> {
         yield FilteredEventsLoaded(
             searchQuery: event.searchQuery, selectedFilters: const <Filter>[]);
       }
-    }else if(event is UpcomingSelected) {
+    } else if (event is UpcomingSelected) {
       yield FilteredEventsLoaded();
     } else if (event is CallForPaperSelected) {
       yield FilteredEventsLoaded(showCallForPapers: true);

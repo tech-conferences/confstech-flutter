@@ -9,10 +9,8 @@ import '../bloc.dart';
 class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
   final FeedbackRepository feedbackRepository;
 
-  FeedbackBloc({ @required this.feedbackRepository });
-
-  @override
-  FeedbackState get initialState => InitialFeedbackState();
+  FeedbackBloc({@required this.feedbackRepository})
+      : super(InitialFeedbackState());
 
   @override
   Stream<FeedbackState> mapEventToState(
@@ -23,7 +21,8 @@ class FeedbackBloc extends Bloc<FeedbackEvent, FeedbackState> {
     if (event is SendFeedbackEvent) {
       try {
         yield SendingFeedbackState();
-        final bool response = await this.feedbackRepository
+        final bool response = await this
+            .feedbackRepository
             .sendFeedback(event.title, event.comment);
 
         if (response) {

@@ -9,11 +9,9 @@ import 'package:http/http.dart' as http;
 import 'bloc/home_page.dart';
 
 void main() {
-  BlocSupervisor.delegate = SimpleBlocDelegate();
+  Bloc.observer = SimpleBlocDelegate();
   runApp(BlocProvider(
-      create: (BuildContext context) => FilteredEventsBloc(),
-      child: MyApp())
-  );
+      create: (BuildContext context) => FilteredEventsBloc(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,22 +22,15 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primarySwatch: Colors.orange,
             primaryColor: Colors.orange,
-            accentColor: Colors.lightBlue[400]
-        ),
+            accentColor: Colors.lightBlue[400]),
         initialRoute: '/',
         routes: {
           '/': (context) => HomePage(),
           '/feedback': (context) => BlocProvider(
-              create: (BuildContext context) =>
-                  FeedbackBloc(
-                      feedbackRepository: FeedbackRepository(
-                          httpClient: http.Client()
-                      )
-                  ),
-              child: FeedbackPage()
-          )
-        }
-    );
+              create: (BuildContext context) => FeedbackBloc(
+                  feedbackRepository:
+                      FeedbackRepository(httpClient: http.Client())),
+              child: FeedbackPage())
+        });
   }
 }
-

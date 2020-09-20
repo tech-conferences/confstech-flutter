@@ -12,7 +12,6 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
-
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _commentController = TextEditingController();
@@ -27,38 +26,38 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedbackBloc, FeedbackState>(
-      bloc: BlocProvider.of(context),
+      cubit: BlocProvider.of(context),
       builder: (BuildContext context, state) {
         return Scaffold(
             appBar: AppBar(
               title: Text("Send feedback"),
               actions: <Widget>[
-                state is! SendingFeedbackState ? IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()){
-                      FocusScope.of(context).unfocus();
-                      BlocProvider.of<FeedbackBloc>(context)
-                          .add(SendFeedbackEvent(
-                          title: _titleController.text,
-                          comment: _commentController.text
+                state is! SendingFeedbackState
+                    ? IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            FocusScope.of(context).unfocus();
+                            BlocProvider.of<FeedbackBloc>(context).add(
+                                SendFeedbackEvent(
+                                    title: _titleController.text,
+                                    comment: _commentController.text));
+                          }
+                        },
                       )
-                      );
-                    }
-                  },
-                ) :
-                Padding(padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.black)
-                      ),
-                    ),
-                  ),
-                )
+                    : Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                                strokeWidth: 3,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.black)),
+                          ),
+                        ),
+                      )
               ],
             ),
             body: BlocListener<FeedbackBloc, FeedbackState>(
@@ -71,11 +70,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     ),
                   );
                 } else if (state is FeedbackSuccessState) {
-                  Scaffold.of(context).showSnackBar(
-                      SnackBar(
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(
                         content: Text("Thanks for sending your feedback"),
-                      )
-                  ).closed.then((_) => Navigator.of(context).pop());
+                      ))
+                      .closed
+                      .then((_) => Navigator.of(context).pop());
                 }
               },
               child: Padding(
@@ -86,22 +86,22 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            labelText: "Title"
-                        ),
+                        decoration: InputDecoration(labelText: "Title"),
                         validator: (String value) {
-                          return value.isEmpty ? 'Title field is required' : null;
+                          return value.isEmpty
+                              ? 'Title field is required'
+                              : null;
                         },
                         controller: _titleController,
                       ),
                       TextFormField(
                         maxLines: 2,
                         minLines: 2,
-                        decoration: InputDecoration(
-                            labelText: "Comment"
-                        ),
+                        decoration: InputDecoration(labelText: "Comment"),
                         validator: (String value) {
-                          return value.isEmpty ? 'Comment field is required' : null;
+                          return value.isEmpty
+                              ? 'Comment field is required'
+                              : null;
                         },
                         controller: _commentController,
                       ),
@@ -109,40 +109,37 @@ class _FeedbackPageState extends State<FeedbackPage> {
                         padding: const EdgeInsets.only(top: 16.0),
                         child: RichText(
                           text: TextSpan(
-                              style: TextStyle(
-                                  fontSize: 16
-                              ),
+                              style: TextStyle(fontSize: 16),
                               children: [
                                 TextSpan(
-                                    text: "This feedback will be publicly available on ",
-                                    style: TextStyle(color: Colors.grey)
-                                ),
+                                    text:
+                                        "This feedback will be publicly available on ",
+                                    style: TextStyle(color: Colors.grey)),
                                 TextSpan(
                                     text: "Conftechs-flutter Github repository",
                                     style: TextStyle(
                                       color: Theme.of(context).primaryColor,
                                       decoration: TextDecoration.underline,
                                     ),
-                                    recognizer: TapGestureRecognizer()..onTap = () async {
-                                      if (await canLaunch("https://github.com/leonardo2204/confstech-flutter/issues")) {
-                                        launch("https://github.com/leonardo2204/confstech-flutter/issues");
-                                      }
-                                    }
-                                ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        if (await canLaunch(
+                                            "https://github.com/leonardo2204/confstech-flutter/issues")) {
+                                          launch(
+                                              "https://github.com/leonardo2204/confstech-flutter/issues");
+                                        }
+                                      }),
                                 TextSpan(
                                     text: " as an issue.",
-                                    style: TextStyle(color: Colors.grey)
-                                )
-                              ]
-                          ),
+                                    style: TextStyle(color: Colors.grey))
+                              ]),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            )
-        );
+            ));
       },
     );
   }
