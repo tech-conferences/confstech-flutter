@@ -29,7 +29,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
   @override
   Future<void> close() {
-    filteredEventsSubscription.cancel();
+    filteredEventsSubscription?.cancel();
     return super.close();
   }
 
@@ -50,6 +50,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         if (response.events.length == 0) {
           yield EventEmpty();
         } else {
+          print(response.events[0].toString());
           yield EventLoaded(
               event: response.events,
               hasMore: response.hasMore,
