@@ -23,6 +23,7 @@ dependencies:
   algolia: ^0.1.7
   bloc: ^6.0.3
   flutter_bloc: ^6.0.5
+  bloc_test: ^7.0.0
   rxdart: ^0.24.0
   http: ^0.12.2
   equatable: ^1.2.5
