@@ -26,7 +26,7 @@ void main() {
     });
 
     blocTest(
-      'emits [1] when CounterEvent.increment is added',
+      'emits [BottomBarSelectedSuccess(selectedIndex: 1)] when BottomBarSelected(1) event is added',
       build: () => bottomBarBloc,
       act: (BottomBarBloc bloc) => bloc.add(BottomBarSelected(1)),
       expect: [BottomBarSelectedSuccess(selectedIndex: 1)],
