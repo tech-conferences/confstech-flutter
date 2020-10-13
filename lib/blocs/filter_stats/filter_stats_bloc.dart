@@ -8,30 +8,34 @@ class FilterStatsBloc extends Bloc<FilterStatsEvent, FilterStatsState> {
   final FilteredEventsBloc filteredEventsBloc;
   StreamSubscription eventSubscription;
 
-  FilterStatsBloc({ @required this.filteredEventsBloc }){
-    eventSubscription = filteredEventsBloc.listen((state){
-      if (state is FilteredEventsLoaded){
+  FilterStatsBloc({@required this.filteredEventsBloc})
+      : super(FilterStatsLoading()) {
+    eventSubscription = filteredEventsBloc.listen((state) {
+      if (state is FilteredEventsLoaded) {
         add(UpdateStats(state.selectedFilters));
       }
     });
   }
 
   @override
-  FilterStatsState get initialState => FilterStatsLoading();
-
-  @override
   Stream<FilterStatsState> mapEventToState(
-      FilterStatsEvent event,
-      ) async* {
+    FilterStatsEvent event,
+  ) async* {
     if (event is UpdateStats) {
-      int topicFilter = event.filters?.where((event) =>
-        event.checked && event.topic == 'topics')?.toList()?.length;
+      int topicFilter = event.filters
+          ?.where((event) => event.checked && event.topic == 'topics')
+          ?.toList()
+          ?.length;
 
-      int countryFilter = event.filters?.where((event) =>
-        event.checked && event.topic == 'country')?.toList()?.length;
+      int countryFilter = event.filters
+          ?.where((event) => event.checked && event.topic == 'country')
+          ?.toList()
+          ?.length;
 
-      yield FilterStatsLoaded(selectedFilters: topicFilter + countryFilter,
-          topicFilters: topicFilter, countryFilters: countryFilter);
+      yield FilterStatsLoaded(
+          selectedFilters: topicFilter + countryFilter,
+          topicFilters: topicFilter,
+          countryFilters: countryFilter);
     }
   }
 
@@ -40,5 +44,4 @@ class FilterStatsBloc extends Bloc<FilterStatsEvent, FilterStatsState> {
     eventSubscription.cancel();
     return super.close();
   }
-
 }

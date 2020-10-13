@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class Event extends Equatable {
-
   final int id;
   final String uuid;
   final String name;
@@ -15,14 +14,24 @@ class Event extends Equatable {
   final String cfpEndDate;
   final String cfpUrl;
 
-  Event({this.id, this.uuid, this.name, this.url, this.city, this.country,
-    this.startDate, this.endDate, this.twitter, this.topics, this.cfpEndDate,
-    this.cfpUrl});
+  Event(
+      {this.id,
+      this.uuid,
+      this.name,
+      this.url,
+      this.city,
+      this.country,
+      this.startDate,
+      this.endDate,
+      this.twitter,
+      this.topics,
+      this.cfpEndDate,
+      this.cfpUrl});
 
   @override
   List<Object> get props => [id];
 
-  static Event fromJson(dynamic json){
+  static Event fromJson(dynamic json) {
     return Event(
       id: json['id'] as int,
       uuid: json['uuid'] as String,
@@ -38,4 +47,7 @@ class Event extends Equatable {
       cfpUrl: json['cfpUrl'] as String,
     );
   }
+
+  @override
+  bool get stringify => true;
 }

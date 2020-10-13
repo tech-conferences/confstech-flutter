@@ -21,7 +21,8 @@ class _TopicFilterState extends State<TopicFilter>
 
   @override
   void initState() {
-    BlocProvider.of<EventFilterBloc>(context)..add(FetchFilters(topic: facetName));
+    BlocProvider.of<EventFilterBloc>(context)
+      ..add(FetchFilters(topic: facetName));
     super.initState();
   }
 
@@ -29,7 +30,7 @@ class _TopicFilterState extends State<TopicFilter>
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<EventFilterBloc, EventFilterState>(
-      bloc: BlocProvider.of(context),
+      cubit: BlocProvider.of(context),
       builder: (BuildContext context, EventFilterState state) {
         if (state is FilterLoading) {
           return Padding(
@@ -41,21 +42,20 @@ class _TopicFilterState extends State<TopicFilter>
               ],
             ),
           );
-        } else if (state is FilterLoaded){
+        } else if (state is FilterLoaded) {
           return Container(
             width: double.maxFinite,
             child: ListView.builder(
               itemCount: state.filters.length,
-              itemBuilder: (context, index){
+              itemBuilder: (context, index) {
                 final filter = state.filters[index];
                 return CheckboxListTile(
                   secondary: Icon(Icons.label_outline),
                   value: filter.checked,
                   title: Text('${filter.name} (${filter.count})'),
-                  onChanged: (bool changed){
+                  onChanged: (bool changed) {
                     BlocProvider.of<EventFilterBloc>(context)
-                        .add(SetFilterCheckboxChecked(filter, changed)
-                    );
+                        .add(SetFilterCheckboxChecked(filter, changed));
                   },
                 );
               },

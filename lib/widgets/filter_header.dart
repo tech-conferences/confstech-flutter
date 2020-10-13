@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterHeader extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -16,11 +15,11 @@ class FilterHeader extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: BlocBuilder<FilterStatsBloc, FilterStatsState>(
-                bloc: BlocProvider.of(context),
+                cubit: BlocProvider.of(context),
                 builder: (BuildContext context, FilterStatsState state) {
                   return FilterButton(
-                      selectedCount: (state is FilterStatsLoaded) ?
-                      state.topicFilters : 0,
+                      selectedCount:
+                          (state is FilterStatsLoaded) ? state.topicFilters : 0,
                       title: 'Topics',
                       onPressed: () {
                         showDialog(
@@ -30,22 +29,21 @@ class FilterHeader extends StatelessWidget {
                                 title: 'Filter by topics:',
                                 facetName: 'topics',
                               );
-                            }
-                        );
+                            });
                       });
-                }
-            ),
+                }),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: BlocBuilder<FilterStatsBloc, FilterStatsState>(
-                bloc: BlocProvider.of(context),
+                cubit: BlocProvider.of(context),
                 builder: (BuildContext context, FilterStatsState state) {
                   return FilterButton(
-                      selectedCount: (state is FilterStatsLoaded) ?
-                      state.countryFilters : 0,
+                      selectedCount: (state is FilterStatsLoaded)
+                          ? state.countryFilters
+                          : 0,
                       title: 'Country',
-                      onPressed: (){
+                      onPressed: () {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -53,15 +51,12 @@ class FilterHeader extends StatelessWidget {
                                 title: 'Filter by countries:',
                                 facetName: 'country',
                               );
-                            }
-                        );
+                            });
                       });
-                }
-            ),
+                }),
           )
         ],
       ),
     );
   }
-
 }

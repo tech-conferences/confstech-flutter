@@ -11,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SearchBody extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => _SearchBodyState();
 }
@@ -56,30 +55,32 @@ class _SearchBodyState extends State<SearchBody> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EventBloc, EventState>(
-      bloc: BlocProvider.of(context),
-      builder: (BuildContext context, EventState state){
-        if(state is EventLoading){
+      cubit: BlocProvider.of(context),
+      builder: (BuildContext context, EventState state) {
+        if (state is EventLoading) {
           return Align(child: CircularProgressIndicator());
-        }else if(state is EventEmpty){
+        } else if (state is EventEmpty) {
           return Column(
             children: <Widget>[
               Text('No results :('),
             ],
           );
-        }else if(state is EventLoaded){
+        } else if (state is EventLoaded) {
           return GroupedListView<Event, String>(
               separator: Divider(),
               controller: _scrollController,
               elements: state.event,
-              renderFooter: state.hasMore ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: CircularProgressIndicator(),
-                  ),
-                ],
-              ) : Container(),
+              renderFooter: state.hasMore
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ],
+                    )
+                  : Container(),
               renderHeader: FilterHeader(),
               itemBuilder: (BuildContext context, Event event) {
                 return ConferenceItem(
@@ -91,9 +92,10 @@ class _SearchBodyState extends State<SearchBody> {
                 return CountryHeader(value);
               },
               groupBy: (Event element) {
-                return DateFormat.yMMMM().format(DateTime.parse(element.startDate));
+                return DateFormat.yMMMM()
+                    .format(DateTime.parse(element.startDate));
               });
-        }else if (state is EventError){
+        } else if (state is EventError) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -103,7 +105,7 @@ class _SearchBodyState extends State<SearchBody> {
                   style: TextStyle(fontSize: 26),
                 ),
                 RaisedButton(
-                  onPressed: (){
+                  onPressed: () {
                     _eventBloc.add(FetchEvent());
                   },
                   child: Text('Try again'),

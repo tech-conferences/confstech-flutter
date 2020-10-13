@@ -20,28 +20,29 @@ dependencies:
   flutter:
     sdk: flutter
 
-  algolia: ^0.1.7
-  flutter_bloc: ^4.0.0
-  rxdart: ^0.24.0
-  http: ^0.12.1
-  equatable: ^1.0.0
-  intl: ^0.16.1
-  url_launcher: ^5.4.2
-  collection: ^1.14.11
-  share: ^0.6.4+3
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
+
+  algolia: ^0.1.7
+  bloc: ^6.0.3
+  flutter_bloc: ^6.0.5
+  bloc_test: ^7.0.4
+  rxdart: ^0.24.0
+  http: ^0.12.2
+  equatable: ^1.2.5
+  intl: ^0.16.1
+  url_launcher: ^5.6.0
+  collection: ^1.14.13
+  share: ^0.6.5+1
+  mockito: ^4.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
 
@@ -55,13 +56,10 @@ flutter:
     - images/algolia.png
     - images/logo_icon.png
   #  - images/a_dot_ham.jpeg
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
@@ -81,3 +79,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

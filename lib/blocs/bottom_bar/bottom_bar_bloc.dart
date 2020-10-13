@@ -4,10 +4,8 @@ import 'package:bloc/bloc.dart';
 
 import '../bloc.dart';
 
-
 class BottomBarBloc extends Bloc<BottomBarEvent, BottomBarState> {
-  @override
-  BottomBarState get initialState => InitialBottomBarState();
+  BottomBarBloc() : super(InitialBottomBarState());
 
   @override
   Stream<BottomBarState> mapEventToState(

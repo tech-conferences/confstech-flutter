@@ -14,26 +14,24 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   final FilteredEventsBloc filteredEventsBloc;
   StreamSubscription filteredEventsSubscription;
 
-  EventBloc({ @required this.eventRepository, @required this.filteredEventsBloc}){
-    filteredEventsSubscription = filteredEventsBloc.listen((state){
-      if(state is FilteredEventsLoaded) {
+  EventBloc({@required this.eventRepository, @required this.filteredEventsBloc})
+      : super(EventLoading()) {
+    filteredEventsSubscription = filteredEventsBloc.listen((state) {
+      if (state is FilteredEventsLoaded) {
         add(FetchEvent(
             filters: state.selectedFilters,
             searchQuery: state.searchQuery,
             showCallForPapers: state.showCallForPapers,
-            showPast: state.showPast
-        ));
+            showPast: state.showPast));
       }
     });
   }
 
   @override
   Future<void> close() {
-    filteredEventsSubscription.cancel();
+    filteredEventsSubscription?.cancel();
     return super.close();
   }
-
-  EventState get initialState => EventLoading();
 
   @override
   Stream<EventState> mapEventToState(EventEvent event) async* {
@@ -42,15 +40,22 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     if (event is FetchEvent) {
       try {
         yield EventLoading();
-        EventResponse response = await this.eventRepository
-            .getEvents(event.searchQuery, event.page, event.filters,
-            event.showCallForPapers, event.showPast);
+        EventResponse response = await this.eventRepository.getEvents(
+            event.searchQuery,
+            event.page,
+            event.filters,
+            event.showCallForPapers,
+            event.showPast);
 
         if (response.events.length == 0) {
           yield EventEmpty();
         } else {
-          yield EventLoaded(event: response.events, hasMore: response.hasMore,
-              currentQuery: event.searchQuery, currentPage: response.page,
+          print(response.events[0].toString());
+          yield EventLoaded(
+              event: response.events,
+              hasMore: response.hasMore,
+              currentQuery: event.searchQuery,
+              currentPage: response.page,
               selectedFilters: response.selectedFilters,
               showCallForPapers: event.showCallForPapers,
               showPast: event.showPast);
@@ -62,19 +67,20 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     } else if (event is LoadMoreEvent && _hasMore(currentState)) {
       try {
         if (currentState is EventLoaded) {
-          EventResponse response = await this.eventRepository
-              .getEvents(
-              currentState.currentQuery, currentState.currentPage + 1,
-              currentState.selectedFilters, currentState.showCallForPapers,
+          EventResponse response = await this.eventRepository.getEvents(
+              currentState.currentQuery,
+              currentState.currentPage + 1,
+              currentState.selectedFilters,
+              currentState.showCallForPapers,
               currentState.showPast);
 
           if (response.events.length == 0) {
             yield currentState.copyWith(hasMore: false);
           } else {
             yield currentState.copyWith(
-                events: currentState.event + response.events,
-                hasMore: response.hasMore,
-                currentPage: currentState.currentPage + 1,
+              events: currentState.event + response.events,
+              hasMore: response.hasMore,
+              currentPage: currentState.currentPage + 1,
             );
           }
         }
